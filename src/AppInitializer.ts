@@ -4,10 +4,10 @@ import Matter from "matter-js";
 const App = new Application();
 const engine = Matter.Engine.create();
 
-function getApp(): Application {
+export function getApp(): Application {
     return App;
 }
 
-function getEngine(): Matter.Engine {
+export function getEngine(): Matter.Engine {
     return engine;
 }

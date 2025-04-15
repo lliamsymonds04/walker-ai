@@ -1,9 +1,10 @@
 import Matter from "matter-js";
 
 import { getApp, getEngine} from "./AppInitializer";
+import { Walker } from "./Walker/Walker";
+import { createGround } from "./Ground";
 
 (async () => {
-  // Create a new application
   const app = getApp();
 
   // Initialize the application
@@ -13,25 +14,20 @@ import { getApp, getEngine} from "./AppInitializer";
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   // Setup the matter engine
-  const World = Matter.World;
-  const Bodies = Matter.Bodies;
+  const Engine = Matter.Engine;
   
   const engine = getEngine();
 
   //add ground
-  const ground = Bodies.rectangle(
-    app.screen.width / 2,
-    app.screen.height - 10,
-    app.screen.width,
-    20,
-    { isStatic: true }
-  );
-  World.add(engine.world, ground);
-
+  createGround(100);
   
+  const testWalker = new Walker(1, 500, 100, 50, 50); 
   // Listen for animate update
   app.ticker.add((time) => {
     // * Delta is 1 if running at 100% performance *
     // * Creates frame-independent transformation *
+    
+    Engine.update(engine)
+    testWalker.update();
   });
 })();

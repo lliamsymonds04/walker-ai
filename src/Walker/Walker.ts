@@ -18,6 +18,7 @@ export class Walker {
     
     public update(): void {
         this.visuals.update(this.physics.getBodyParts());
+        // console.log(this.physics.getBodyParts()[0].part.position.x, this.physics.getBodyParts()[0].part.position.y);
     }
 
     public cluneup(): void {
