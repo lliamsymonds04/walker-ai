@@ -8,10 +8,12 @@ const limbTexture = await Assets.load("/assets/FishLimb.png");
 
 export class WalkerVisuals {
     private visuals: Map<string, Sprite> = new Map<string, Sprite>(); 
+    private transparency: number = 1.0; // Default transparency
 
     constructor(radius: number, legLength: number, legWidth: number) {
         const app = getApp();
 
+        this.transparency = 1.0; // Default transparency
         
 
         for (let i = 0; i < LimbNames.length; i++) {
@@ -38,6 +40,8 @@ export class WalkerVisuals {
     }
     
     public update(bodyParts: {key:string, part: Matter.Body}[]): void {
+        if (this.transparency == 0) return; // If transparency is 0, do not update visuals
+
         for (var i: number = 0; i < bodyParts.length; i++) {
             const part = bodyParts[i].part;
             const key = bodyParts[i].key;
@@ -48,6 +52,16 @@ export class WalkerVisuals {
                 visual.angle = part.angle;
             }
         }
+    }
+    
+    public setTransparency(transparency: number): void {
+        if (transparency < 0 || transparency > 1) {
+            throw new Error("Transparency must be between 0 and 1.");
+        }
+        this.visuals.forEach((visual) => {
+            visual.alpha = transparency;
+        });
+        this.transparency = transparency;
     }
     
     public cleanup(): void {

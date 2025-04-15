@@ -3,6 +3,7 @@ import Matter from "matter-js";
 import { getApp, getEngine} from "./AppInitializer";
 import { Walker } from "./Walker/Walker";
 import { createGround } from "./Ground";
+import { createMouse } from "./Mouse";
 
 (async () => {
   const app = getApp();
@@ -21,12 +22,12 @@ import { createGround } from "./Ground";
   //add ground
   createGround(100);
   
+  createMouse();
+  
+  
   const testWalker = new Walker(1, 500, 100, 40, 50); 
   // Listen for animate update
   app.ticker.add(() => {
-    // * Delta is 1 if running at 100% performance *
-    // * Creates frame-independent transformation *
-    
     Engine.update(engine)
     testWalker.update();
   });

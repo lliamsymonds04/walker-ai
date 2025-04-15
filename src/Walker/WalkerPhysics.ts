@@ -27,20 +27,21 @@ export class WalkerPhysics {
             }
         });
 
+
         const rightHipPos = {
-            x: x + Math.floor(Math.cos(bottomOfBodyAngle + legAttachAngle) * r),
-            y: y + Math.floor(Math.sin(bottomOfBodyAngle + legAttachAngle) * r),
+            x: x + r + Math.floor(Math.cos(bottomOfBodyAngle + legAttachAngle) * r),
+            y: y + r + Math.floor(Math.sin(bottomOfBodyAngle + legAttachAngle) * r),
         };
         const leftHipPos = {
-            x: x + Math.floor(Math.cos(bottomOfBodyAngle - legAttachAngle) * r),
-            y: y + Math.floor(Math.sin(bottomOfBodyAngle - legAttachAngle) * r)
+            x: x + r + Math.floor(Math.cos(bottomOfBodyAngle - legAttachAngle) * r),
+            y: y + r +  Math.floor(Math.sin(bottomOfBodyAngle - legAttachAngle) * r)
         };
 
         // Create the limbs with collision filters
         this.upperRightLeg = Bodies.rectangle(rightHipPos.x, rightHipPos.y + legLength / 2, legWidth, legLength, {
             collisionFilter: {
                 category: collisionCategory,
-                mask: ~collisionCategory // Collides with everything except its own category
+                mask: ~collisionCategory
             }
         });
 
@@ -66,30 +67,10 @@ export class WalkerPhysics {
         });
 
         // Create the joints
-        const rightHip = Constraint.create({
-            bodyA: this.body,
-            bodyB: this.upperRightLeg,
-            pointA: { x: rightHipPos.x - x, y: rightHipPos.y - y },
-            pointB: { x: legWidth / 2, y: -legLength / 2 }
-        });
-        const rightKnee = Constraint.create({
-            bodyA: this.upperRightLeg,
-            bodyB: this.lowerRightLeg,
-            pointA: { x: legWidth / 2, y: legLength / 2 },
-            pointB: { x: legWidth / 2, y: -legLength / 2 }
-        });
-        const leftHip = Constraint.create({
-            bodyA: this.body,
-            bodyB: this.upperLeftLeg,
-            pointA: { x: leftHipPos.x - x, y: leftHipPos.y - y },
-            pointB: { x: legWidth / 2, y: -legLength / 2 }
-        });
-        const leftKnee = Constraint.create({
-            bodyA: this.upperLeftLeg,
-            bodyB: this.lowerLeftLeg,
-            pointA: { x: legWidth / 2, y: legLength / 2 },
-            pointB: { x: legWidth / 2, y: -legLength / 2 }
-        });
+        const rightHip = makeConnector(this.body, this.upperRightLeg, rightHipPos.x - x - r, rightHipPos.y - y - r, 0, -legLength / 2);
+        const rightKnee = makeConnector(this.upperRightLeg, this.lowerRightLeg, 0, legLength / 2, 0, -legLength / 2);
+        const leftHip = makeConnector(this.body, this.upperLeftLeg, leftHipPos.x - x - r, leftHipPos.y - y - r, 0, -legLength / 2);
+        const leftKnee = makeConnector(this.upperLeftLeg, this.lowerLeftLeg, 0, legLength / 2, 0, -legLength / 2);
 
         this.joints = [rightHip, rightKnee, leftHip, leftKnee];
 
@@ -133,3 +114,16 @@ export class WalkerPhysics {
         World.remove(getEngine().world, this.joints);
     }
   }
+  
+function makeConnector(bodyA: Matter.Body, bodyB: Matter.Body, ax: number, ay: number, bx: number, by: number): Matter.Constraint {
+    return Constraint.create({
+        bodyA: bodyA,
+        bodyB: bodyB,
+        pointA: { x: ax, y: ay },
+        pointB: { x: bx, y: by },
+        stiffness: 0.7,
+        // damping: 0.1,
+        length: 0,
+        
+    });
+}
