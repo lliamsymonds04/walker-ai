@@ -1,7 +1,10 @@
-import { Sprite, Texture, Graphics} from "pixi.js";
+import { Sprite, Assets} from "pixi.js";
 import { getApp } from "../AppInitializer";
 
 const LimbNames = ["upperRightLeg", "upperLeftLeg", "lowerRightLeg", "lowerLeftLeg"];
+
+const bodyTexture = await Assets.load("/assets/FishBody.png"); 
+const limbTexture = await Assets.load("/assets/FishLimb.png");
 
 export class WalkerVisuals {
     private visuals: Map<string, Sprite> = new Map<string, Sprite>(); 
@@ -9,24 +12,21 @@ export class WalkerVisuals {
     constructor(radius: number, legLength: number, legWidth: number) {
         const app = getApp();
 
+        
+
         for (let i = 0; i < LimbNames.length; i++) {
             const limbName = LimbNames[i];
-            const limbVisual = new Sprite({texture: Texture.WHITE});
+            const limbVisual = new Sprite({texture: limbTexture});
             limbVisual.width = legWidth; 
             limbVisual.height = legLength;
             limbVisual.anchor.set(0.5, 0.5);
             this.visuals.set(limbName, limbVisual);
             app.stage.addChild(limbVisual);
         }        
-
-        const ballGraphics = new Graphics();
         
-        ballGraphics.fill(0xFFA500);
-        ballGraphics.circle(0, 0, radius);
-
         // Convert to texture and make a sprite
-        const ballTexture = app.renderer.generateTexture(ballGraphics);
-        const ballSprite = new Sprite(ballTexture);
+        
+        const ballSprite = new Sprite({texture: bodyTexture});
         ballSprite.width = radius * 2;
         ballSprite.height = radius * 2;
 

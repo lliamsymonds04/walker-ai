@@ -28,8 +28,8 @@ export class WalkerPhysics {
         });
 
         const rightHipPos = {
-            x: x + Math.floor(Math.cos(bottomOfBodyAngle + legAttachAngle) * r + legWidth / 2),
-            y: y + Math.floor(Math.sin(bottomOfBodyAngle + legAttachAngle) * r - legWidth / 2),
+            x: x + Math.floor(Math.cos(bottomOfBodyAngle + legAttachAngle) * r),
+            y: y + Math.floor(Math.sin(bottomOfBodyAngle + legAttachAngle) * r),
         };
         const leftHipPos = {
             x: x + Math.floor(Math.cos(bottomOfBodyAngle - legAttachAngle) * r),

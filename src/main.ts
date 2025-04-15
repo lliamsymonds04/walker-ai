@@ -21,9 +21,9 @@ import { createGround } from "./Ground";
   //add ground
   createGround(100);
   
-  const testWalker = new Walker(1, 500, 100, 50, 50); 
+  const testWalker = new Walker(1, 500, 100, 40, 50); 
   // Listen for animate update
-  app.ticker.add((time) => {
+  app.ticker.add(() => {
     // * Delta is 1 if running at 100% performance *
     // * Creates frame-independent transformation *
     
