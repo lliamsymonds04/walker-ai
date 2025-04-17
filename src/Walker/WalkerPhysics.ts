@@ -24,7 +24,8 @@ export class WalkerPhysics {
             collisionFilter: {
                 category: collisionCategory,
                 mask: 0xFFFF // Collides with everything by default
-            }
+            },
+            isStatic: true,
         });
 
 

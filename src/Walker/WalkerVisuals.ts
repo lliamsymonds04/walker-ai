@@ -70,6 +70,7 @@ export class WalkerVisuals {
             const pointA = Matter.Vector.add(constraint.bodyA.position, constraint.pointA);
             const pointB = Matter.Vector.add(constraint.bodyB.position, constraint.pointB);
 
+            this.debugGraphics.stroke({
                 color: 0xff0000,
                 width: 2
             }).moveTo(pointA.x, pointA.y).lineTo(pointB.x, pointB.y);
