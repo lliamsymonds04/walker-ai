@@ -56,7 +56,7 @@ export class WalkerVisuals {
             if (visual) {
                 visual.x = part.position.x;
                 visual.y = part.position.y;
-                visual.angle = part.angle;
+                visual.rotation = part.angle;
             }
         }
     }
