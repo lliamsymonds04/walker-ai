@@ -1,4 +1,5 @@
-import { Sprite, Assets} from "pixi.js";
+import { Sprite, Assets, Graphics} from "pixi.js";
+import Matter from "matter-js";
 import { getApp } from "../AppInitializer";
 
 const LimbNames = ["upperRightLeg", "upperLeftLeg", "lowerRightLeg", "lowerLeftLeg"];
@@ -9,6 +10,7 @@ const limbTexture = await Assets.load("/assets/FishLimb.png");
 export class WalkerVisuals {
     private visuals: Map<string, Sprite> = new Map<string, Sprite>(); 
     private transparency: number = 1.0; // Default transparency
+    private debugGraphics: Graphics; // Placeholder for debug graphics
 
     constructor(radius: number, legLength: number, legWidth: number) {
         const app = getApp();
@@ -36,7 +38,12 @@ export class WalkerVisuals {
         ballSprite.anchor.set(0.5);
         app.stage.addChild(ballSprite);
 
+
         this.visuals.set("body", ballSprite);
+        
+        //setup the debug
+        this.debugGraphics = new Graphics();
+        app.stage.addChild(this.debugGraphics);
     }
     
     public update(bodyParts: {key:string, part: Matter.Body}[]): void {
@@ -52,6 +59,21 @@ export class WalkerVisuals {
                 visual.angle = part.angle;
             }
         }
+    }
+    
+    public drawJoints(joints: Matter.Constraint[]): void {
+        this.debugGraphics.clear();
+
+        joints.forEach((constraint) => {
+            if (!constraint.bodyA || !constraint.bodyB) return;
+
+            const pointA = Matter.Vector.add(constraint.bodyA.position, constraint.pointA);
+            const pointB = Matter.Vector.add(constraint.bodyB.position, constraint.pointB);
+
+                color: 0xff0000,
+                width: 2
+            }).moveTo(pointA.x, pointA.y).lineTo(pointB.x, pointB.y);
+        });
     }
     
     public setTransparency(transparency: number): void {
