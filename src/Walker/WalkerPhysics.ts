@@ -125,14 +125,10 @@ export class WalkerPhysics {
     }
     
     public setMotors(ru: number, lu: number, rl: number, ll: number): void {
-        
-        //set joint angular velocity
-        this.upperRightLeg.torque = ru;
-        this.upperLeftLeg.torque = lu;
-        this.lowerRightLeg.torque = rl;
-        this.lowerLeftLeg.torque = ll;
-
-        Matter.Body.applyForce(this.upperRightLeg, this.upperRightLeg.position, {x: 0, y: -1});
+        applyTorque(this.upperRightLeg, ru, Math.floor(this.legLength/4));
+        applyTorque(this.upperLeftLeg, lu, Math.floor(this.legLength/4));
+        applyTorque(this.lowerRightLeg, rl, Math.floor(this.legLength/4));
+        applyTorque(this.lowerLeftLeg, ll, Math.floor(this.legLength/4));
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {
