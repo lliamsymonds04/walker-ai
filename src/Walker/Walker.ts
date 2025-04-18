@@ -22,7 +22,7 @@ export class Walker {
         this.visuals.drawJoints(this.physics.getJoints());
     }
 
-    public cluneup(): void {
+    public cleanup(): void {
         this.physics.cleanup();
         this.visuals.cleanup();
     }
