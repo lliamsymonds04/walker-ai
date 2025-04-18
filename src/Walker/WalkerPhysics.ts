@@ -1,7 +1,8 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
+import { createLimb, makeConnector } from "./ConstraintHelpers";
 
-const { Bodies, Constraint, World } = Matter;
+const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
 
@@ -40,10 +41,10 @@ export class WalkerPhysics {
         };
         
         // Create the limbs
-        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength);
-        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength);
-        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength);
-        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength);
+        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, collisionCategory);
+        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, collisionCategory);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, collisionCategory);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, collisionCategory);
 
         // Create the joints
         const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
@@ -101,8 +102,15 @@ export class WalkerPhysics {
         return this.body.position.x - this.startingX;
     }
     
-    public setMotors(): void {
+    public setMotors(ru: number, lu: number, rl: number, ll: number): void {
+        
         //set joint angular velocity
+        this.upperRightLeg.torque = ru;
+        this.upperLeftLeg.torque = lu;
+        this.lowerRightLeg.torque = rl;
+        this.lowerLeftLeg.torque = ll;
+
+        Matter.Body.applyForce(this.upperRightLeg, this.upperRightLeg.position, {x: 0, y: -1});
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {
@@ -123,26 +131,3 @@ export class WalkerPhysics {
     }
   }
   
-function makeConnector(bodyA: Matter.Body, bodyB: Matter.Body, ax: number, ay: number, bx: number, by: number): Matter.Constraint {
-    return Constraint.create({
-        bodyA: bodyA,
-        bodyB: bodyB,
-        pointA: { x: ax, y: ay },
-        pointB: { x: bx, y: by },
-        stiffness: 0.7,
-        damping: 0.1,
-        length: 0,
-        
-    });
-}
-
-function createLimb(x: number, y: number, width: number, height: number): Matter.Body {
-    return Bodies.rectangle(x, y, width, height, {
-        collisionFilter: {
-            group: -1,
-            category: collisionCategory, // Define a collision category for the limb 
-            mask: 0xFFFF // Collides with everything by default
-        },
-        frictionAir: 0.05,
-    });
-}
