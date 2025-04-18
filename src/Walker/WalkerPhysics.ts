@@ -26,7 +26,7 @@ export class WalkerPhysics {
             },
         });
 
-        const hipRadiusOffset = 1;
+        const hipRadiusOffset = 2;
         const angle = (90 - legAttachAngle) * Math.PI / 180;
         const hipOffset = {
             x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
