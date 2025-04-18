@@ -3,8 +3,7 @@ import { getEngine } from "../AppInitializer";
 
 const { Bodies, Constraint, World } = Matter;
 
-const legAttachAngle = 50 * Math.PI / 180;
-const bottomOfBodyAngle =  Math.PI / 4;
+const legAttachAngle = 35;
 
 export class WalkerPhysics {
     private body: Matter.Body;
@@ -25,36 +24,25 @@ export class WalkerPhysics {
                 category: collisionCategory,
                 mask: 0xFFFF // Collides with everything by default
             },
-            isStatic: true,
         });
 
-
-        const rightHipPos = {
-            x: x + r + Math.floor(Math.cos(bottomOfBodyAngle + legAttachAngle) * r),
-            y: y + r + Math.floor(Math.sin(bottomOfBodyAngle + legAttachAngle) * r),
-        };
-        const leftHipPos = {
-            x: x + r + Math.floor(Math.cos(bottomOfBodyAngle - legAttachAngle) * r),
-            y: y + r +  Math.floor(Math.sin(bottomOfBodyAngle - legAttachAngle) * r)
+        const hipRadiusOffset = 1;
+        const angle = (90 - legAttachAngle) * Math.PI / 180;
+        const hipOffset = {
+            x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
+            y: Math.ceil(Math.sin(angle) * (r + hipRadiusOffset)),
         };
         
-       
-        const bodyCenter = {
-            x: x + r,
-            y: y + r,
-        };
-
-        
-        // Create the limbs with collision filters
-        this.upperRightLeg = createLimb(rightHipPos.x, rightHipPos.y, legWidth, legLength);
-        this.upperLeftLeg = createLimb(leftHipPos.x, leftHipPos.y, legWidth, legLength);
-        this.lowerRightLeg = createLimb(rightHipPos.x, rightHipPos.y + legLength, legWidth, legLength);
-        this.lowerLeftLeg = createLimb(leftHipPos.x, leftHipPos.y + legLength, legWidth, legLength);
+        // Create the limbs
+        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength);
+        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength);
 
         // Create the joints
-        const rightHip = makeConnector(this.body, this.upperRightLeg, rightHipPos.x - bodyCenter.x, rightHipPos.y - bodyCenter.y, 0, -legLength / 2);
+        const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
+        const leftHip = makeConnector(this.body, this.upperLeftLeg, -hipOffset.x, hipOffset.y, 0, -legLength / 2);
         const rightKnee = makeConnector(this.upperRightLeg, this.lowerRightLeg, 0, legLength / 2, 0, -legLength / 2);
-        const leftHip = makeConnector(this.body, this.upperLeftLeg, leftHipPos.x - x - r, leftHipPos.y - y - r, 0, -legLength / 2);
         const leftKnee = makeConnector(this.upperLeftLeg, this.lowerLeftLeg, 0, legLength / 2, 0, -legLength / 2);
 
         this.joints = [rightHip, rightKnee, leftHip, leftKnee];
@@ -111,7 +99,7 @@ function makeConnector(bodyA: Matter.Body, bodyB: Matter.Body, ax: number, ay: n
         pointA: { x: ax, y: ay },
         pointB: { x: bx, y: by },
         stiffness: 0.7,
-        // damping: 0.1,
+        damping: 0.1,
         length: 0,
         
     });
@@ -123,6 +111,6 @@ function createLimb(x: number, y: number, width: number, height: number): Matter
             category: 0x0001,
             mask: 0xFFFF // Collides with everything by default
         },
-        frictionAir: 0.0,
+        frictionAir: 0.05,
     });
 }
