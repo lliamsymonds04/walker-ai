@@ -5,6 +5,8 @@ const { Bodies, Constraint, World } = Matter;
 
 const legAttachAngle = 35;
 
+const collisionCategory = 0x0001; // Define a collision category for the walker
+
 export class WalkerPhysics {
     private body: Matter.Body;
     private upperRightLeg: Matter.Body;
@@ -12,17 +14,19 @@ export class WalkerPhysics {
     private lowerRightLeg: Matter.Body;
     private lowerLeftLeg: Matter.Body;
     private startingX: number;
+    private radius: number;
     private joints: Matter.Constraint[];
     private bodyParts: {key: string, part: Matter.Body}[] = [];
     private previousAngles: Map<string, number> = new Map<string, number>();
-
+    
     constructor(x: number, y: number, r: number, legLength: number, legWidth: number) {
         this.startingX = x;
-        const collisionCategory = 0x0001; // Define a collision category for the walker
+        this.radius = r;
 
         // Create the body
         this.body = Bodies.circle(x, y, r, {
             collisionFilter: {
+                group: -1,
                 category: collisionCategory,
                 mask: 0xFFFF // Collides with everything by default
             },
@@ -105,6 +109,10 @@ export class WalkerPhysics {
         return this.bodyParts; 
     }
     
+    public isBodyTouchingGround(): boolean {
+        return false; // Placeholder for actual ground collision detection
+    }
+    
     public getJoints(): Matter.Constraint[] {
         return this.joints;
     }
@@ -131,7 +139,8 @@ function makeConnector(bodyA: Matter.Body, bodyB: Matter.Body, ax: number, ay: n
 function createLimb(x: number, y: number, width: number, height: number): Matter.Body {
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
-            category: 0x0001,
+            group: -1,
+            category: collisionCategory, // Define a collision category for the limb 
             mask: 0xFFFF // Collides with everything by default
         },
         frictionAir: 0.05,
