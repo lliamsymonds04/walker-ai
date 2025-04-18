@@ -88,8 +88,6 @@ export class WalkerPhysics {
     }
   
     public getInputs(dt: number) {
-        //get the inputs from the limbs, ie, angle, angular velocity, foot distance to ground
-        
         //calculate the angular velocity of the limbs
         var newAngles = new Map<string, number>();
         const angularVelocities = new Map<string, number>();
