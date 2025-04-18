@@ -25,7 +25,7 @@ export function createLimb(x: number, y: number, width: number, height: number, 
     });
 }
 
-export function applyPseudoTorque(body: Body, torqueScalar: number, armLength = 30) {
+export function applyTorque(body: Body, torqueScalar: number, armLength = 30) {
     const angle = body.angle;
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);

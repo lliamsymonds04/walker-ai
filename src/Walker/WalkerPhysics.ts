@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
-import { createLimb, makeConnector } from "./ConstraintHelpers";
+import { createLimb, makeConnector, applyTorque } from "./ConstraintHelpers";
 
 const { Bodies, World } = Matter;
 
@@ -16,6 +16,7 @@ export class WalkerPhysics {
     private lowerLeftLeg: Matter.Body;
     private startingX: number;
     private radius: number;
+    private legLength: number;
     private joints: Matter.Constraint[];
     private bodyParts: {key: string, part: Matter.Body}[] = [];
     private previousAngles: Map<string, number> = new Map<string, number>();
@@ -23,6 +24,7 @@ export class WalkerPhysics {
     constructor(x: number, y: number, r: number, legLength: number, legWidth: number) {
         this.startingX = x;
         this.radius = r;
+        this.legLength = legLength;
 
         // Create the body
         this.body = Bodies.circle(x, y, r, {
@@ -86,15 +88,27 @@ export class WalkerPhysics {
         //get the inputs from the limbs, ie, angle, angular velocity, foot distance to ground
         
         //calculate the angular velocity of the limbs
-        
+        var newAngles = new Map<string, number>();
+        const angularVelocities = new Map<string, number>();
 
-        //update the angles
+        
         for (var i = 0; i < this.bodyParts.length; i++) {
-            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle);
+            const prev_angle = this.previousAngles.get(this.bodyParts[i].key)!;
+            const new_angle = this.bodyParts[i].part.angle;
+            const angular_velocity = (new_angle - prev_angle) / dt;
+
+            angularVelocities.set(this.bodyParts[i].key, angular_velocity);
+            newAngles.set(this.bodyParts[i].key, new_angle);
+            
+            this.previousAngles.set(this.bodyParts[i].key, new_angle);
         }
         
+        // Calculate the distance to the ground for the feet
+        
+               
         return {
-
+            angles: newAngles,
+            angularVelocities: angularVelocities,
         }
     }
     
@@ -118,6 +132,7 @@ export class WalkerPhysics {
     }
     
     public isBodyTouchingGround(): boolean {
+        //check if body.Y - ground.Y < r
         return false; // Placeholder for actual ground collision detection
     }
     
