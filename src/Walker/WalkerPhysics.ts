@@ -11,11 +11,13 @@ export class WalkerPhysics {
     private upperLeftLeg: Matter.Body;
     private lowerRightLeg: Matter.Body;
     private lowerLeftLeg: Matter.Body;
+    private startingX: number;
     private joints: Matter.Constraint[];
-
     private bodyParts: {key: string, part: Matter.Body}[] = [];
+    private previousAngles: Map<string, number> = new Map<string, number>();
 
     constructor(x: number, y: number, r: number, legLength: number, legWidth: number) {
+        this.startingX = x;
         const collisionCategory = 0x0001; // Define a collision category for the walker
 
         // Create the body
@@ -55,6 +57,11 @@ export class WalkerPhysics {
             { key: 'lowerRightLeg', part: this.lowerRightLeg },
             { key: 'lowerLeftLeg', part: this.lowerLeftLeg }
         ];
+        
+        // Store the previous angles for each limb
+        for (var i = 0; i < this.bodyParts.length; i++) {
+            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle);
+        }
 
         // Add parts to the world
         World.add(getEngine().world, [
@@ -70,8 +77,24 @@ export class WalkerPhysics {
         ]);
     }
   
-    public getInputs(): void {
+    public getInputs(dt: number) {
         //get the inputs from the limbs, ie, angle, angular velocity, foot distance to ground
+        
+        //calculate the angular velocity of the limbs
+        
+
+        //update the angles
+        for (var i = 0; i < this.bodyParts.length; i++) {
+            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle);
+        }
+        
+        return {
+
+        }
+    }
+    
+    public getDistanceTravelled(): number {
+        return this.body.position.x - this.startingX;
     }
     
     public setMotors(): void {
