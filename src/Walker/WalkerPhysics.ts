@@ -129,5 +129,4 @@ export class WalkerPhysics {
         World.remove(getEngine().world, [this.body, this.upperRightLeg, this.upperLeftLeg, this.lowerRightLeg, this.lowerLeftLeg]);
         World.remove(getEngine().world, this.joints);
     }
-  }
-  
+}

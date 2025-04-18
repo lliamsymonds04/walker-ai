@@ -24,3 +24,38 @@ export function createLimb(x: number, y: number, width: number, height: number, 
         frictionAir: 0.05,
     });
 }
+
+export function applyPseudoTorque(body: Body, torqueScalar: number, armLength = 30) {
+    const angle = body.angle;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+  
+    // Force magnitude based on torque and arm length
+    const forceMag = torqueScalar / armLength;
+  
+    // Offset positions on either side of the center (relative to rotation)
+    const offsetA = {
+      x: body.position.x + armLength * cos,
+      y: body.position.y + armLength * sin,
+    };
+  
+    const offsetB = {
+      x: body.position.x - armLength * cos,
+      y: body.position.y - armLength * sin,
+    };
+  
+    // Apply forces at the two offsets
+    const force = {
+      x: -forceMag * sin, // perpendicular to offset arm
+      y:  forceMag * cos,
+    };
+  
+    const oppositeForce = {
+      x: -force.x,
+      y: -force.y,
+    };
+  
+    Body.applyForce(body, offsetA, force);
+    Body.applyForce(body, offsetB, oppositeForce);
+}
+  
