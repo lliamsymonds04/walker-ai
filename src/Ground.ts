@@ -2,6 +2,8 @@ import Matter from "matter-js";
 import { TilingSprite, Assets } from "pixi.js";
 import { getApp, getEngine } from "./AppInitializer";
 
+var groundHeight = 0
+
 export async function createGround(height: number) {
     const app = getApp();
     const engine = getEngine()
@@ -36,4 +38,10 @@ export async function createGround(height: number) {
     groundVisual.y = app.screen.height - height/2;
     
     app.stage.addChild(groundVisual);
+    
+    groundHeight =  app.screen.height - height; 
+}
+
+export function getGroundHeight() {
+    return groundHeight;
 }
