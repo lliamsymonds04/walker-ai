@@ -140,8 +140,11 @@ export class WalkerPhysics {
     }
     
     public isBodyTouchingGround(): boolean {
-        //check if body.Y - ground.Y < r
-        return false; // Placeholder for actual ground collision detection
+        const groundHeight = getGroundHeight();
+        const bodyY = this.body.position.y;
+        const distance = (groundHeight - bodyY);
+
+        return distance < this.radius + 5;
     }
     
     public getJoints(): Matter.Constraint[] {
