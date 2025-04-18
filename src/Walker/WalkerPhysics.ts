@@ -1,6 +1,7 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
 import { createLimb, makeConnector, applyTorque } from "./ConstraintHelpers";
+import { getGroundHeight } from "../Ground";
 
 const { Bodies, World } = Matter;
 
@@ -105,10 +106,17 @@ export class WalkerPhysics {
         
         // Calculate the distance to the ground for the feet
         
+        const groundHeight = getGroundHeight();
+        const leftFootY = this.lowerLeftLeg.position.y + Math.sin(this.lowerLeftLeg.angle) * this.legLength / 2;
+        const rightFootY = this.lowerRightLeg.position.y + Math.sin(this.lowerRightLeg.angle) * this.legLength / 2;
+        const leftFootDistance = Math.abs(leftFootY - groundHeight);
+        const rightFootDistance = Math.abs(rightFootY - groundHeight);
                
         return {
             angles: newAngles,
             angularVelocities: angularVelocities,
+            leftFootDistance: leftFootDistance,
+            rightFootDistance: rightFootDistance,
         }
     }
     
