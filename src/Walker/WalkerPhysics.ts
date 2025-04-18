@@ -6,6 +6,8 @@ import { getGroundHeight } from "../Ground";
 const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
+const maxAngularVelocity = 10;
+const tau = Math.PI * 2;
 
 const collisionCategory = 0x0001; // Define a collision category for the walker
 
@@ -68,7 +70,7 @@ export class WalkerPhysics {
         
         // Store the previous angles for each limb
         for (var i = 0; i < this.bodyParts.length; i++) {
-            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle);
+            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle/tau);
         }
 
         // Add parts to the world
@@ -92,16 +94,19 @@ export class WalkerPhysics {
         var newAngles = new Map<string, number>();
         const angularVelocities = new Map<string, number>();
 
-        
         for (var i = 0; i < this.bodyParts.length; i++) {
-            const prev_angle = this.previousAngles.get(this.bodyParts[i].key)!;
-            const new_angle = this.bodyParts[i].part.angle;
-            const angular_velocity = (new_angle - prev_angle) / dt;
-
-            angularVelocities.set(this.bodyParts[i].key, angular_velocity);
-            newAngles.set(this.bodyParts[i].key, new_angle);
+            const prevAngle = this.previousAngles.get(this.bodyParts[i].key)!;
+            const newAngle = this.bodyParts[i].part.angle/tau; // Normalize the angle to [0, 1]
+            var angularVelocity = (newAngle - prevAngle) / dt;
             
-            this.previousAngles.set(this.bodyParts[i].key, new_angle);
+            // Normalize the angular velocity to [0,1]
+            angularVelocity = (angularVelocity + maxAngularVelocity)/(2 * maxAngularVelocity); 
+            angularVelocity = Math.min(Math.max(angularVelocity, 0), 1); // Clamp to [0, 1]
+
+            angularVelocities.set(this.bodyParts[i].key, angularVelocity);
+            newAngles.set(this.bodyParts[i].key, newAngle);
+            
+            this.previousAngles.set(this.bodyParts[i].key, newAngle);
         }
         
         // Calculate the distance to the ground for the feet
@@ -109,8 +114,12 @@ export class WalkerPhysics {
         const groundHeight = getGroundHeight();
         const leftFootY = this.lowerLeftLeg.position.y + Math.sin(this.lowerLeftLeg.angle) * this.legLength / 2;
         const rightFootY = this.lowerRightLeg.position.y + Math.sin(this.lowerRightLeg.angle) * this.legLength / 2;
-        const leftFootDistance = Math.abs(leftFootY - groundHeight);
-        const rightFootDistance = Math.abs(rightFootY - groundHeight);
+        var leftFootDistance = Math.abs(leftFootY - groundHeight);
+        var rightFootDistance = Math.abs(rightFootY - groundHeight);
+
+        const maxGroundDist = this.legLength * 2;
+        leftFootDistance = Math.min(leftFootDistance, maxGroundDist)/maxGroundDist;
+        rightFootDistance = Math.min(rightFootDistance, maxGroundDist)/maxGroundDist;
                
         return {
             angles: newAngles,
