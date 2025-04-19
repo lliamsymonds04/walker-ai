@@ -81,4 +81,11 @@ export class DAG {
 
         return result;
     }
+    
+    getRandomNodeByTypes(types: NodeType[]): Node | null {
+        const filteredNodes = this.nodes.filter(node => types.includes(node.type));
+        if (filteredNodes.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * filteredNodes.length);
+        return filteredNodes[randomIndex];
+    }
 }
