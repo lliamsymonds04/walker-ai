@@ -131,6 +131,10 @@ export class DAG {
         return this.nodeIdCounter++;
     }
     
+    public updateNoudeCounter() {
+        this.nodeIdCounter = this.nodes[this.nodes.length - 1].id + 1; // Update the counter to the next available ID
+    }
+    
     createNewNode(type: NodeType): Node {
         return {
             id: this.getNextNodeId(),

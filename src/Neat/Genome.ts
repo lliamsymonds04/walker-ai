@@ -48,7 +48,7 @@ export class Genome {
         .filter((n) => n.type === "output")
         .map((n) => nodeMap.get(n.id) || 0);
     }
-    
+   /*  
     mutateAddConnection() {
         const nodeA = this.dag.getRandomNodeByTypes(["input", "hidden"]);
         const nodeB = this.dag.getRandomNodeByTypes(["hidden", "output"]);
@@ -67,7 +67,7 @@ export class Genome {
           // Connection would create cycle — skip
         }
     }
-    
+     */
     //getters
     getNumInputs(): number {
         return this.numInputs;
