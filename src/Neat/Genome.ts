@@ -17,4 +17,6 @@ export class Genome {
         this.neurons = new Map<number, Node>();
         this.links = new Map<LinkId, Link>();
     }
+    
+    
 }

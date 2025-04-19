@@ -24,7 +24,6 @@ import { createMouse } from "./Mouse";
   
   createMouse();
   
-  
   const testWalker = new Walker(1, 500, 100, 40, 50); 
   // Listen for animate update
   app.ticker.add(() => {
