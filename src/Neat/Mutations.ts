@@ -1,5 +1,4 @@
 import { Genome } from "./Genome";
-import { sigmoid } from "./ActivationFunctions";
 
 export function mutateAddConnection(genome: Genome): void {
     const nodeA = genome.dag.getRandomNodeByTypes(["input", "hidden"]);
@@ -29,12 +28,9 @@ export function removeLink(genome: Genome): void {
 }
 
 export function mutateAddHiddenNode(genome: Genome): void {
+    const oldConnection = genome.dag.getRandomConnection();
+    if (!oldConnection) return; // No connections to mutate
 
-    const numConnections = genome.dag.connections.length;
-    if (numConnections === 0) return; // No connections to mutate
-
-    const index = Math.floor(Math.random() * numConnections);
-    const oldConnection = genome.dag.connections[index];
     oldConnection.enabled = false; // Disable the original connection
     
     const newNode = genome.dag.createNewNode("hidden");
@@ -57,9 +53,37 @@ export function mutateAddHiddenNode(genome: Genome): void {
 }
 
 export function removeHiddenNode(genome: Genome): void {
-    // const hiddenNodes = genome.dag.nodes.filter(node => node.type === "hidden");
     const node = genome.dag.getRandomNodeByTypes(["hidden"]);
     if (!node) return; // No hidden nodes to remove
 
     genome.dag.removeNode(node.id); // Remove the node from the DAG
+}
+
+//Non-structural mutations
+export function mutateWeight(genome: Genome, mutationStrength: number): void {
+    const connection = genome.dag.getRandomConnection();
+    if (!connection) return; // No connections to mutate
+    
+    connection.weight += (Math.random() * 2 - 1) * mutationStrength; // Mutate the weight
+}
+
+export function resetWeight(genome: Genome): void {
+    const connection = genome.dag.getRandomConnection();
+    if (!connection) return; // No connections to reset
+
+    connection.weight = Math.random() * 2 - 1; // Reset the weight to a random value
+}
+
+export function toggleConnection(genome: Genome): void {
+    const connection = genome.dag.getRandomConnection();
+    if (!connection) return; // No connections to toggle
+
+    connection.enabled = !connection.enabled; // Toggle the enabled state
+}
+
+export function mutateBias(genome: Genome, mutationStrength: number): void {
+    const node = genome.dag.getRandomNodeByTypes(["hidden", "output"]);
+    if (!node) return; // No nodes to mutate
+
+    node.bias += (Math.random() * 2 - 1) * mutationStrength; // Mutate the bias
 }

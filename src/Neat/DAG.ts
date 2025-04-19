@@ -111,6 +111,12 @@ export class DAG {
         const randomIndex = Math.floor(Math.random() * filteredNodes.length);
         return filteredNodes[randomIndex];
     }
+
+    getRandomConnection(): Connection | null {
+        if (this.connections.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * this.connections.length);
+        return this.connections[randomIndex];
+    }
     
     removeNode(nodeId: number): void {
         for (let i = this.connections.length - 1; i >= 0; i--) {
