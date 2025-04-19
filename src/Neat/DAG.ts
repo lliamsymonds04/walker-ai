@@ -1,12 +1,15 @@
+import { getRandomActivationFunction } from "./ActivationFunctions";
+
 type NodeType = "input" | "hidden" | "output";
 
-interface Node {
+export interface Node {
   id: number;
   type: NodeType;
-  value?: number;
+  bias: number;
+  activationFunction: (x: number) => number; 
 }
 
-interface Connection {
+export interface Connection {
   from: number;
   to: number;
   weight: number;
@@ -17,6 +20,7 @@ interface Connection {
 export class DAG {
     nodes: Node[] = []; // Array to hold nodes
     connections: Connection[] = []; // Array to hold connections
+    private nodeIdCounter: number = 0; // Counter for unique node IDs
 
     addNode(node: Node): void {
         this.nodes.push(node); // Add a node to the DAG
@@ -28,6 +32,25 @@ export class DAG {
         }
         this.connections.push(connection); // Add a connection to the DAG
     }
+    
+    isConnected(from: number, to: number): boolean {
+        const visited = new Set<number>();
+        const stack = [from];
+
+        while (stack.length > 0) {
+            const current = stack.pop();
+            if (current === undefined) continue;
+            if (current === to) return true;
+            visited.add(current);
+            for (const conn of this.connections) {
+                if (conn.enabled && conn.from === current && !visited.has(conn.to)) {
+                    stack.push(conn.to);
+                }
+            }
+        }
+        return false;
+    }
+
 
     introducesCycle(from: number, to: number): boolean {
         const visited = new Set<number>();
@@ -87,5 +110,27 @@ export class DAG {
         if (filteredNodes.length === 0) return null;
         const randomIndex = Math.floor(Math.random() * filteredNodes.length);
         return filteredNodes[randomIndex];
+    }
+    
+    removeNode(nodeId: number): void {
+        for (let i = this.connections.length - 1; i >= 0; i--) {
+            if (this.connections[i].from === nodeId || this.connections[i].to === nodeId) {
+                this.connections.splice(i, 1); // Remove connections associated with the node
+            }
+        }
+        this.nodes = this.nodes.filter(node => node.id !== nodeId); // Remove the node itself
+    }
+
+    private getNextNodeId(): number {
+        return this.nodeIdCounter++;
+    }
+    
+    createNewNode(type: NodeType): Node {
+        return {
+            id: this.getNextNodeId(),
+            type: type,
+            bias: Math.random() * 2 - 1, // Random bias between -1 and 1
+            activationFunction: getRandomActivationFunction(),
+        }
     }
 }
