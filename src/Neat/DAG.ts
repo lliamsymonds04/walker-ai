@@ -23,6 +23,9 @@ export class DAG {
     }
 
     addConnection(connection: Connection): void {
+        if (this.introducesCycle(connection.from, connection.to)) {
+            throw new Error(`Adding this connection would introduce a cycle: ${connection.from} -> ${connection.to}`);
+        }
         this.connections.push(connection); // Add a connection to the DAG
     }
 
