@@ -1,5 +1,3 @@
-import Matter from "matter-js";
-
 import { getApp, getEngine} from "./AppInitializer";
 import { createGround } from "./Ground";
 import { SimulationHandler } from "./Simulation/SimulationHandler";
@@ -17,9 +15,9 @@ import { SimulationHandler } from "./Simulation/SimulationHandler";
   const engine = getEngine();
 
   //add ground
-  createGround(100);
+  await createGround(100);
   
-  const simulationHandler = new SimulationHandler(engine, 10); // 10 walkers
+  const simulationHandler = new SimulationHandler(engine, 5); // 10 walkers
   // Listen for animate update
   app.ticker.add((ticker) => {
     const dt = ticker.deltaMS;
