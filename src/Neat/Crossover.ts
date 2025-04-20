@@ -58,5 +58,7 @@ export function crossoverGenomes(parent1: Genome, parent2: Genome): Genome {
         }
     }
     
+    newDAG.updateNodeCounter();
+    
     return new Genome(dominant.getNumInputs(), dominant.getNumOutputs(), newDAG); 
 }

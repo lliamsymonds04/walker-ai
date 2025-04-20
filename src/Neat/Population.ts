@@ -88,11 +88,11 @@ function createGenome(numInputs: number, numOutputs: number): Genome {
     
     //create output nodes
     for (let i = 0; i < numOutputs; i++) {
-        const outputId = numInputs + i;
+        const outputId = i;
         newGenome.dag.addNode({
             id: outputId,
             type: "output",
-            bias: 0,
+            bias: Math.random() * 2 - 1, // Random bias between -1 and 1
             activationFunction: (x) => x, // Identity function for output nodes
         });
             
@@ -107,6 +107,8 @@ function createGenome(numInputs: number, numOutputs: number): Genome {
             });
         }
     }
+    
+    newGenome.dag.updateNodeCounter();
 
     return newGenome
 }

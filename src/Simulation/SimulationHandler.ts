@@ -5,7 +5,7 @@ import { updateGenerationCounter } from "../Overlay";
 const SimulationLifespan = 10 //seconds
 
 export class SimulationHandler {
-    private stepsPerUpdate: number = 1; // Number of steps to take per update
+    private stepsPerUpdate: number = 3; // Number of steps to take per update
     private simulator: Simulator; 
     private engine: Engine; // Matter.js engine
     private generation: number = 0; // Current generation number

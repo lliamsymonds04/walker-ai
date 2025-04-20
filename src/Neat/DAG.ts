@@ -20,7 +20,7 @@ export interface Connection {
 export class DAG {
     nodes: Node[] = []; // Array to hold nodes
     connections: Connection[] = []; // Array to hold connections
-    private nodeIdCounter: number = 0; // Counter for unique node IDs
+    public nodeIdCounter: number = 0; // Counter for unique node IDs
 
     addNode(node: Node): void {
         this.nodes.push(node); // Add a node to the DAG

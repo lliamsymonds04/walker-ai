@@ -50,18 +50,22 @@ export function mutateAddHiddenNode(genome: Genome): void {
     genome.dag.addNode(newNode); // Add the new node to the DAG
     
     //add the new connections
-    genome.dag.addConnection({
-        from: oldConnection.from,
-        to: newNode.id,
-        weight: 1, 
-        enabled: true,
-    });
-    genome.dag.addConnection({
-        from: newNode.id,
-        to: oldConnection.to,
-        weight: oldConnection.weight, 
-        enabled: true,
-    });
+    try {
+        genome.dag.addConnection({
+            from: oldConnection.from,
+            to: newNode.id,
+            weight: 1, 
+            enabled: true,
+        });
+        genome.dag.addConnection({
+            from: newNode.id,
+            to: oldConnection.to,
+            weight: oldConnection.weight, 
+            enabled: true,
+        });   
+    } catch (e) {
+        // Connection would create cycle — skip
+    }
 }
 
 export function removeHiddenNode(genome: Genome): void {
@@ -90,7 +94,13 @@ export function toggleConnection(genome: Genome): void {
     const connection = genome.dag.getRandomConnection();
     if (!connection) return; // No connections to toggle
 
-    connection.enabled = !connection.enabled; // Toggle the enabled state
+    // If enabling, check for cycle
+    if (!connection.enabled) {
+        const wouldCycle = genome.dag.introducesCycle(connection.from, connection.to);
+        if (wouldCycle) return; // Skip if enabling would create a cycle
+    }
+
+    connection.enabled = !connection.enabled;
 }
 
 export function mutateBias(genome: Genome, mutationStrength: number): void {
