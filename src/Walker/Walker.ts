@@ -18,8 +18,11 @@ export class Walker {
     
     public update(): void {
         this.visuals.update(this.physics.getBodyParts());
-        // console.log(this.physics.getBodyParts()[0].part.position.x, this.physics.getBodyParts()[0].part.position.y);
         this.visuals.drawJoints(this.physics.getJoints());
+    }
+    
+    public getFitness(): number {
+        return this.physics.getDistanceTravelled();
     }
 
     public destroy(): void {
