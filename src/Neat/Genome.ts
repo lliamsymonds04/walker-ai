@@ -1,4 +1,4 @@
-import { DAG, Node, Connection } from './DAG';
+import { DAG } from './DAG';
 
 export class Genome {
     // private id: number;
@@ -48,26 +48,7 @@ export class Genome {
         .filter((n) => n.type === "output")
         .map((n) => nodeMap.get(n.id) || 0);
     }
-   /*  
-    mutateAddConnection() {
-        const nodeA = this.dag.getRandomNodeByTypes(["input", "hidden"]);
-        const nodeB = this.dag.getRandomNodeByTypes(["hidden", "output"]);
-
-        if (nodeA === null || nodeB === null) return;
-        if (nodeA.id === nodeB.id) return;
-      
-        try {
-          this.dag.addConnection({
-            from: nodeA.id,
-            to: nodeB.id,
-            weight: Math.random() * 2 - 1,
-            enabled: true,
-          });
-        } catch (e) {
-          // Connection would create cycle — skip
-        }
-    }
-     */
+   
     //getters
     getNumInputs(): number {
         return this.numInputs;
