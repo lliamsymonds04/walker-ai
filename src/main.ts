@@ -13,18 +13,17 @@ import { SimulationHandler } from "./Simulation/SimulationHandler";
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
-  // Setup the matter engine
-  const Engine = Matter.Engine;
   
   const engine = getEngine();
 
   //add ground
   createGround(100);
   
+  const simulationHandler = new SimulationHandler(engine, 10); // 10 walkers
   // Listen for animate update
   app.ticker.add((ticker) => {
     const dt = ticker.deltaMS;
-    Engine.update(engine)
-    // testWalker.update();
+    
+    simulationHandler.update(dt);
   });
 })();

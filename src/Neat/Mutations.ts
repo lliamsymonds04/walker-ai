@@ -1,5 +1,17 @@
 import { Genome } from "./Genome";
 
+export interface MutationConfig {
+    addConnectionChance: number;
+    removeConnectionChance: number;
+    addHiddenNodeChance: number;
+    removeHiddenNodeChance: number;
+    mutateWeightChance: number;
+    resetWeightChance: number;
+    toggleConnectionChance: number;
+    mutateBiasChance: number;
+    mutationStrength: number;
+}
+
 export function mutateAddConnection(genome: Genome): void {
     const nodeA = genome.dag.getRandomNodeByTypes(["input", "hidden"]);
     const nodeB = genome.dag.getRandomNodeByTypes(["hidden", "output"]);
@@ -19,7 +31,7 @@ export function mutateAddConnection(genome: Genome): void {
     }
 }
 
-export function removeLink(genome: Genome): void {
+export function removeConnection(genome: Genome): void {
     const numConnections = genome.dag.connections.length;
     if (numConnections === 0) return; // No connections to remove
 
