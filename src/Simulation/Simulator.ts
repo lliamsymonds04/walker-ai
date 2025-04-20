@@ -1,11 +1,10 @@
-import { Population } from "./Neat/Population";
-import { Walker, getNumInputs, getNumOutputs } from "./Walker/Walker";
-import { getGroundHeight } from "./Ground";
+import { Population } from "../Neat/Population";
+import { Walker, getNumInputs, getNumOutputs } from "../Walker/Walker";
+import { getGroundHeight } from "../Ground";
 
 interface simulatorConfig {
     populationSize: number;
     survivalThreshold: number;
-    lifespan: number;
 }
 
 //walker parameters
@@ -14,10 +13,10 @@ const WalkerLegLength = 50;
 const StartingX = 50;
 
 export class Simulator {
-    private population: Population
-    private walkers: Walker[] = []
-    public generation: number = 0
-    private config: simulatorConfig
+    private population: Population;
+    private walkers: Walker[] = [];
+    private config: simulatorConfig;
+    private aliveTime: number = 0;
 
     constructor(config: simulatorConfig, population?: Population) {
         this.config = config;
@@ -58,16 +57,31 @@ export class Simulator {
         }
     }
 
-    update(dt: number): void {
+    //returns the number of walkers alive
+    update(dt: number): number {
+        var walkersAlive = 0;
+
+        this.aliveTime += dt; // Increment alive time
         this.population.genomes.forEach((genome, i) => {
             const walker = this.walkers[i];
+            if (walker.isAlive()) {
+                walkersAlive++; // Count alive walkers
+                
+                const inputs = walker.getInputs(dt); // Get inputs from the walker
+                const outputs = genome.evaluate(inputs); 
+
+                // Set the outputs to the walker
+                walker.setOutputs(outputs); 
+            }
             
-            const inputs = walker.getInputs(dt); // Get inputs from the walker
-            const outputs = genome.evaluate(inputs); 
             
-            // Set the outputs to the walker
-            walker.setOutputs(outputs); 
         });
+        
+        return walkersAlive
+    }
+    
+    render(): void {
+        this.walkers.forEach(w => w.update()); // Render each walker
     }
 
     makeNewGeneration(): Simulator {
@@ -83,6 +97,10 @@ export class Simulator {
         const newPop = this.population.reproduce(); // Reproduce the population
 
         return new Simulator(this.config, newPop); 
+    }
+    
+    getAliveTime(): number {
+        return this.aliveTime;
     }
 }
 

@@ -1,9 +1,8 @@
 import Matter from "matter-js";
 
 import { getApp, getEngine} from "./AppInitializer";
-import { Walker } from "./Walker/Walker";
 import { createGround } from "./Ground";
-import { createMouse } from "./Mouse";
+import { SimulationHandler } from "./Simulation/SimulationHandler";
 
 (async () => {
   const app = getApp();
@@ -22,12 +21,10 @@ import { createMouse } from "./Mouse";
   //add ground
   createGround(100);
   
-  createMouse();
-  
-  const testWalker = new Walker(1, 500, 100, 40, 50); 
   // Listen for animate update
-  app.ticker.add(() => {
+  app.ticker.add((ticker) => {
+    const dt = ticker.deltaMS;
     Engine.update(engine)
-    testWalker.update();
+    // testWalker.update();
   });
 })();
