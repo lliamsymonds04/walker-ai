@@ -53,19 +53,24 @@ export class DAG {
 
 
     introducesCycle(from: number, to: number): boolean {
+        if (from === to) return true;
+
         const visited = new Set<number>();
         const stack = [to];
 
         while (stack.length > 0) {
-          const current = stack.pop();
-          if (current === undefined) continue;
-          if (current === from) return true;
-          visited.add(current);
-          for (const conn of this.connections) {
-            if (conn.enabled && conn.from === current && !visited.has(conn.to)) {
-              stack.push(conn.to);
+            const current = stack.pop();
+            if (current === undefined || visited.has(current)) continue;
+
+            if (current === from) return true;
+
+            visited.add(current);
+
+            for (const conn of this.connections) {
+                if (conn.enabled && conn.from === current) {
+                    stack.push(conn.to);
+                }
             }
-          }
         }
 
         return false;
@@ -99,6 +104,7 @@ export class DAG {
         }
 
         if (result.length !== this.nodes.length) {
+          console.log(result.length, this.nodes.length)
           throw new Error("Graph has cycles or disconnected nodes");
         }
 
