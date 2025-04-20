@@ -11,7 +11,7 @@ interface PopulationConfig {
 }
 
 export class Population {
-    private genomes: Genome[] = []; // Array to hold genomes
+    public genomes: Genome[] = []; // Array to hold genomes
     private config: PopulationConfig; // Configuration for the population
     private mutationConfig: MutationConfig; // Configuration for mutations
 
@@ -43,6 +43,8 @@ export class Population {
             const child = crossoverGenomes(parent1, parent2); 
 
             //mutate the child genome
+            this.mutateGenome(child);
+            
             newGeneration.push(child); // Add the child genome to the new generation
         }
 

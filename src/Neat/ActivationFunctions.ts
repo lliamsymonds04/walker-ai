@@ -15,3 +15,7 @@ export function getRandomActivationFunction(): (x: number) => number {
     const randomIndex = Math.floor(Math.random() * functions.length);
     return functions[randomIndex];
 }
+
+export function identity(x: number): number {
+    return x; // Identity function
+}
