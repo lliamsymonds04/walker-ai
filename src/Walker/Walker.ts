@@ -24,6 +24,24 @@ export class Walker {
     public getFitness(): number {
         return this.physics.getDistanceTravelled();
     }
+    
+    public getInputs(dt: number): number[] {
+        const inputs = this.physics.getInputs(dt);
+        
+        //convert map to array
+        const outputs = []
+
+        for (const [_, value] of inputs.angles) {
+            outputs.push(value);
+        }
+        for (const [_, value] of inputs.angularVelocities) {
+            outputs.push(value);
+        }
+        outputs.push(inputs.leftFootDistance);
+        outputs.push(inputs.rightFootDistance);
+
+        return outputs;
+    }
 
     public destroy(): void {
         this.physics.cleanup();
