@@ -40,7 +40,10 @@ export class Genome {
             return acc + (nodeMap.get(conn.from) || 0) * conn.weight;
           }, 0);
       
-          nodeMap.set(node.id, node.activationFunction(sum)); // or ReLU, tanh, etc.
+          // Add the node's bias to the sum
+          const biasedSum = sum + (node.bias || 0);
+      
+          nodeMap.set(node.id, node.activationFunction(biasedSum));
         } 
 
         // Collect outputs
