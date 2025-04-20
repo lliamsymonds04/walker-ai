@@ -32,7 +32,7 @@ export class Walker {
     public getInputs(dt: number): number[] {
         //check the robot hasnt fallen over
         if (this.alive) {
-            if (this.physics.isBodyTouchingGround()) {
+            if (this.physics.shouldDie()) {
                 this.destroy();
             }
         }

@@ -9,6 +9,7 @@ const legAttachAngle = 35;
 const maxAngularVelocity = 10;
 const tau = Math.PI * 2;
 const torqueArmDividor = 8;
+const launchVelocity = 10;
 
 const collisionCategory = 0x0001; // Define a collision category for the walker
 
@@ -142,12 +143,28 @@ export class WalkerPhysics {
         return this.bodyParts; 
     }
     
-    public isBodyTouchingGround(): boolean {
+    private isBodyTouchingGround(): boolean {
         const groundHeight = getGroundHeight();
         const bodyY = this.body.position.y;
         const distance = (groundHeight - bodyY);
 
         return distance < this.radius + 1;
+    }
+    
+    private isBodyLaunched(): boolean {
+        const velY = this.body.velocity.y;
+        
+        return Math.abs(velY) > launchVelocity;
+    }
+    
+    public shouldDie(): boolean {
+        const onGround = this.isBodyTouchingGround();
+        if (onGround) return true;
+
+        const isLaunched = this.isBodyLaunched();
+        if (isLaunched) return true;
+
+        return false
     }
     
     public getJoints(): Matter.Constraint[] {
