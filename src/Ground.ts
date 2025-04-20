@@ -12,7 +12,7 @@ export async function createGround(height: number) {
     const ground = Bodies.rectangle(
        app.screen.width / 2,
        app.screen.height - height/2,
-       app.screen.width,
+       app.screen.width * 10,
        height,
        { isStatic: true }
     );
