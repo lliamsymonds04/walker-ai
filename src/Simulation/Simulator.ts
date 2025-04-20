@@ -75,8 +75,6 @@ export class Simulator {
                 // Set the outputs to the walker
                 walker.setOutputs(outputs); 
             }
-            
-            
         });
         
         return walkersAlive

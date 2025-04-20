@@ -8,6 +8,7 @@ const { Bodies, World } = Matter;
 const legAttachAngle = 35;
 const maxAngularVelocity = 10;
 const tau = Math.PI * 2;
+const torqueArmDividor = 8;
 
 const collisionCategory = 0x0001; // Define a collision category for the walker
 
@@ -131,10 +132,10 @@ export class WalkerPhysics {
     }
     
     public setMotors(ru: number, lu: number, rl: number, ll: number): void {
-        applyTorque(this.upperRightLeg, ru, Math.floor(this.legLength/4));
-        applyTorque(this.upperLeftLeg, lu, Math.floor(this.legLength/4));
-        applyTorque(this.lowerRightLeg, rl, Math.floor(this.legLength/4));
-        applyTorque(this.lowerLeftLeg, ll, Math.floor(this.legLength/4));
+        applyTorque(this.upperRightLeg, ru, Math.floor(this.legLength/torqueArmDividor));
+        applyTorque(this.upperLeftLeg, lu, Math.floor(this.legLength/torqueArmDividor));
+        applyTorque(this.lowerRightLeg, rl, Math.floor(this.legLength/torqueArmDividor));
+        applyTorque(this.lowerLeftLeg, ll, Math.floor(this.legLength/torqueArmDividor));
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {
