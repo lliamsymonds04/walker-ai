@@ -3,7 +3,7 @@ import { crossoverGenomes } from "./Crossover";
 import { mutateAddConnection, mutateAddHiddenNode, removeHiddenNode, mutateBias,
     mutateWeight, MutationConfig, resetWeight, toggleConnection, removeConnection} from "./Mutations";
 
-interface PopulationConfig {
+export interface PopulationConfig {
     size: number;
     numInputs: number;
     numOutputs: number;
