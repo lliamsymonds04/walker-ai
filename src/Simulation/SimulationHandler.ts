@@ -23,7 +23,7 @@ export class SimulationHandler {
     public update(dt: number): void {
         var isSimulationFinished = false;
         for (let i = 0; i < this.stepsPerUpdate; i++) {
-            Engine.update(this.engine, dt);
+            Engine.update(this.engine,dt);
             
             const aliveCount = this.simulator.update(dt);
             
@@ -32,6 +32,8 @@ export class SimulationHandler {
                 break;
             }
         }
+        
+        this.simulator.render();
         
         if (isSimulationFinished) {
             //create a new simulation
