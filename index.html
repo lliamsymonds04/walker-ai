@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/src/style.css">
     <title>Walking Fish AI</title>
 </head>
 
@@ -12,16 +12,17 @@
     <div id="app">
         <div id="pixi-container"></div>
     </div>
-    <div id="generation" style="
-        position: absolute;
-        top: 50px;
-        left: 50px;
-        color: white;
-        font-size: 24px;
-        pointer-events: none;
-      ">
-        Geneartion:  
-      </div>
+    <div class="absolute top-[10px] left-[50px]">
+        <div id="generation" class="relative text-2xl text-white">
+            Generation:
+        </div>    
+        
+        <div id="speedLabel" class="text-2xl">
+            Speed: 
+        </div>
+        <input id="speed" type="range" min="1" max="5" value="1" class="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+    </div>
+    
     <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

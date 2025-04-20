@@ -2,7 +2,7 @@ import { WalkerPhysics } from "./WalkerPhysics";
 import { WalkerVisuals } from "./WalkerVisuals";
 
 const legThickness = 0.4;
-const outputScaler = 0.05;
+const outputScaler = 0.1;
 
 export class Walker {
     private id: number;
@@ -22,7 +22,6 @@ export class Walker {
         if (!this.alive) return; // If not alive, do not update
         
         this.visuals.update(this.physics.getBodyParts());
-        // this.visuals.drawJoints(this.physics.getJoints());
     }
     
     public getFitness(): number {
