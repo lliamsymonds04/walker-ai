@@ -104,7 +104,8 @@ export class DAG {
         }
 
         if (result.length !== this.nodes.length) {
-          console.log(result.length, this.nodes.length)
+          console.log(this.nodes)
+          console.log(this.connections)
           throw new Error("Graph has cycles or disconnected nodes");
         }
 
@@ -137,7 +138,7 @@ export class DAG {
         return this.nodeIdCounter++;
     }
     
-    public updateNoudeCounter() {
+    public updateNodeCounter() {
         this.nodeIdCounter = this.nodes[this.nodes.length - 1].id + 1; // Update the counter to the next available ID
     }
     
