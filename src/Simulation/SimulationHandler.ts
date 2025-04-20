@@ -21,7 +21,9 @@ export class SimulationHandler {
         };
         this.simulator = new Simulator(simulatorConfig);
         updateGenerationCounter(this.generation); //init the counter 
-        setupSpeedSlider(); //init the speed slider
+        setupSpeedSlider(this.stepsPerUpdate, (x: number) => {
+            this.stepsPerUpdate = Math.floor(x);
+        }); //init the speed slider
     }
     
     public update(dt: number): void {
