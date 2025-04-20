@@ -5,6 +5,7 @@ import { getGroundHeight } from "../Ground";
 interface simulatorConfig {
     populationSize: number;
     survivalThreshold: number;
+    walkerTransparency: number;
 }
 
 //walker parameters
@@ -53,6 +54,7 @@ export class Simulator {
         const startingX = StartingX + WalkerRadius;
         for (let i = 0; i < this.population.genomes.length; i++) {
             const walker = new Walker(i, startingX, startingY, WalkerRadius, WalkerLegLength);
+            walker.setTransparency(this.config.walkerTransparency);
             this.walkers.push(walker); 
         }
     }

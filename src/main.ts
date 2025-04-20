@@ -17,7 +17,7 @@ import { SimulationHandler } from "./Simulation/SimulationHandler";
   //add ground
   await createGround(100);
   
-  const simulationHandler = new SimulationHandler(engine, 5); // 10 walkers
+  const simulationHandler = new SimulationHandler(engine, 25);
   // Listen for animate update
   app.ticker.add((ticker) => {
     const dt = ticker.deltaMS;

@@ -63,13 +63,13 @@ export class Walker {
         );
     }
     
-    isAlive() {
+    public isAlive() {
        return this.alive; 
     }
 
     public destroy(): void {
         if (!this.alive) return; // If already destroyed, do nothing
-        
+
         this.alive = false;
         this.physics.cleanup();
         this.visuals.cleanup();
@@ -77,6 +77,10 @@ export class Walker {
 
     public getId(): number {
         return this.id;
+    }
+    
+    public setTransparency(transparency: number): void {
+        this.visuals.setTransparency(transparency);
     }
 }
 
