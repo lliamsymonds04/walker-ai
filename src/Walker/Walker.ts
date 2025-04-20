@@ -2,6 +2,7 @@ import { WalkerPhysics } from "./WalkerPhysics";
 import { WalkerVisuals } from "./WalkerVisuals";
 
 const legThickness = 0.4;
+const outputScaler = 3;
 
 export class Walker {
     private id: number;
@@ -42,6 +43,16 @@ export class Walker {
 
         return outputs;
     }
+    
+    public setOutputs(outputs: number[]): void {
+
+        this.physics.setMotors(
+            outputs[0] * outputScaler,
+            outputs[1] * outputScaler,
+            outputs[2] * outputScaler,
+            outputs[3] * outputScaler
+        );
+    }
 
     public destroy(): void {
         this.physics.cleanup();
@@ -51,4 +62,12 @@ export class Walker {
     public getId(): number {
         return this.id;
     }
+}
+
+export function getNumInputs(): number {
+    return 12;
+}
+
+export function getNumOutputs(): number {
+    return 4;
 }
