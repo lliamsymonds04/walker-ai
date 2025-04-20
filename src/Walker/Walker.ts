@@ -45,7 +45,6 @@ export class Walker {
     }
     
     public setOutputs(outputs: number[]): void {
-
         this.physics.setMotors(
             outputs[0] * outputScaler,
             outputs[1] * outputScaler,
