@@ -20,7 +20,7 @@ export class Walker {
     
     public update(): void {
         this.visuals.update(this.physics.getBodyParts());
-        this.visuals.drawJoints(this.physics.getJoints());
+        // this.visuals.drawJoints(this.physics.getJoints());
     }
     
     public getFitness(): number {
