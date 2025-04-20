@@ -108,7 +108,6 @@ export class WalkerPhysics {
         }
         
         // Calculate the distance to the ground for the feet
-        
         const groundHeight = getGroundHeight();
         const leftFootY = this.lowerLeftLeg.position.y + Math.sin(this.lowerLeftLeg.angle) * this.legLength / 2;
         const rightFootY = this.lowerRightLeg.position.y + Math.sin(this.lowerRightLeg.angle) * this.legLength / 2;
@@ -147,7 +146,7 @@ export class WalkerPhysics {
         const bodyY = this.body.position.y;
         const distance = (groundHeight - bodyY);
 
-        return distance < this.radius + 5;
+        return distance < this.radius + 1;
     }
     
     public getJoints(): Matter.Constraint[] {
