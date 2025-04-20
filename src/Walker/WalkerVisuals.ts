@@ -92,5 +92,7 @@ export class WalkerVisuals {
             visual.destroy();
         });
         this.visuals.clear();
+        this.debugGraphics.clear();
+        this.debugGraphics.destroy();
     }
 }
