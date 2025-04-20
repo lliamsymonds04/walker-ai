@@ -10,14 +10,13 @@ import { SimulationHandler } from "./Simulation/SimulationHandler";
 
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
-
   
   const engine = getEngine();
 
   //add ground
   await createGround(100);
   
-  const simulationHandler = new SimulationHandler(engine, 25);
+  const simulationHandler = new SimulationHandler(engine, 50);
   // Listen for animate update
   app.ticker.add((ticker) => {
     const dt = ticker.deltaMS;
