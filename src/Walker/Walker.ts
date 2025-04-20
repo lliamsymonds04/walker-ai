@@ -2,7 +2,7 @@ import { WalkerPhysics } from "./WalkerPhysics";
 import { WalkerVisuals } from "./WalkerVisuals";
 
 const legThickness = 0.4;
-const outputScaler = 3;
+const outputScaler = 0.05;
 
 export class Walker {
     private id: number;
