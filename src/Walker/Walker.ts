@@ -8,6 +8,7 @@ export class Walker {
     private id: number;
     private physics: WalkerPhysics;
     private visuals: WalkerVisuals;
+    private alive: boolean = true;
     
     constructor(id: number, x: number, y: number, r: number, legLength: number) {
         this.id = id;
@@ -27,6 +28,13 @@ export class Walker {
     }
     
     public getInputs(dt: number): number[] {
+        //check the robot hasnt fallen over
+        if (this.alive) {
+            if (this.physics.isBodyTouchingGround()) {
+                this.alive = false;
+            }
+        }
+
         const inputs = this.physics.getInputs(dt);
         
         //convert map to array
@@ -51,6 +59,10 @@ export class Walker {
             outputs[2] * outputScaler,
             outputs[3] * outputScaler
         );
+    }
+    
+    isAlive() {
+       return this.alive; 
     }
 
     public destroy(): void {
