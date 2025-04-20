@@ -1,5 +1,6 @@
 import { Simulator } from "./Simulator";
 import { Engine } from "matter-js";
+import { updateGenerationCounter } from "../Overlay";
 
 const SimulationLifespan = 10 //seconds
 
@@ -19,6 +20,7 @@ export class SimulationHandler {
             walkerTransparency: 0.5,
         };
         this.simulator = new Simulator(simulatorConfig);
+        updateGenerationCounter(this.generation); //init the counter 
     }
     
     public update(dt: number): void {
@@ -46,5 +48,6 @@ export class SimulationHandler {
         this.generation++;
         const newSimulator = this.simulator.makeNewGeneration();
         this.simulator = newSimulator;
+        updateGenerationCounter(this.generation); 
     }
 }
