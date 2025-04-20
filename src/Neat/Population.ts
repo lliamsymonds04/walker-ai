@@ -15,12 +15,16 @@ export class Population {
     private config: PopulationConfig; // Configuration for the population
     private mutationConfig: MutationConfig; // Configuration for mutations
 
-    constructor(config: PopulationConfig, mutationConfig: MutationConfig) {
+    constructor(config: PopulationConfig, mutationConfig: MutationConfig, genomes?: Genome[]) {
         this.config = config; // Store the configuration
         this.mutationConfig = mutationConfig;
          
-        for (let i = 0; i < config.size; i++) {
-            this.genomes.push(createGenome(config.numInputs, config.numOutputs));
+        if (genomes) {
+            this.genomes = genomes; // If genomes are provided, use them
+        } else {
+            for (let i = 0; i < config.size; i++) {
+                this.genomes.push(createGenome(config.numInputs, config.numOutputs));
+            }
         }
     }
     
@@ -28,7 +32,7 @@ export class Population {
         this.genomes.sort((a, b) => b.fitness - a.fitness); // Sort genomes by fitness in descending order
     }
     
-    reproduce(): Genome[] {
+    reproduce(): Population {
 
         this.sortByFitness();
         const reproductionCutoff = Math.floor(this.genomes.length * this.config.survivalThreshold); // Calculate number of survivors
@@ -48,7 +52,8 @@ export class Population {
             newGeneration.push(child); // Add the child genome to the new generation
         }
 
-        return newGeneration;
+        // return newGeneration;
+        return new Population(this.config, this.mutationConfig, newGeneration); 
     }
     
     mutateGenome(g: Genome): void {
