@@ -19,6 +19,8 @@ export class Walker {
     }
     
     public update(): void {
+        if (!this.alive) return; // If not alive, do not update
+        
         this.visuals.update(this.physics.getBodyParts());
         // this.visuals.drawJoints(this.physics.getJoints());
     }
@@ -31,7 +33,7 @@ export class Walker {
         //check the robot hasnt fallen over
         if (this.alive) {
             if (this.physics.isBodyTouchingGround()) {
-                this.alive = false;
+                this.destroy();
             }
         }
 
@@ -66,6 +68,9 @@ export class Walker {
     }
 
     public destroy(): void {
+        if (!this.alive) return; // If already destroyed, do nothing
+        
+        this.alive = false;
         this.physics.cleanup();
         this.visuals.cleanup();
     }
