@@ -30,7 +30,7 @@ export class Walker {
         return this.physics.getDistanceTravelled();
     }
     
-    public getInputs(dt: number): number[] {
+    public getInputs(): number[] {
         //check the robot hasnt fallen over
         if (this.alive) {
             if (this.physics.shouldDie()) {
@@ -38,17 +38,11 @@ export class Walker {
             }
         }
 
-        const inputs = this.physics.getInputs(dt);
+        const inputs = this.physics.getInputs();
         
         //convert map to array
-        const outputs = []
-
-        for (const [_, value] of inputs.angles) {
-            outputs.push(value);
-        }
-        for (const [_, value] of inputs.angularVelocities) {
-            outputs.push(value);
-        }
+        const outputs: Array<number> = inputs.angles.concat(inputs.angularVelocities); 
+        
         outputs.push(inputs.leftFootDistance);
         outputs.push(inputs.rightFootDistance);
 

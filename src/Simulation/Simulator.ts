@@ -69,7 +69,7 @@ export class Simulator {
             if (walker.isAlive()) {
                 walkersAlive++; // Count alive walkers
                 
-                const inputs = walker.getInputs(dt); // Get inputs from the walker
+                const inputs = walker.getInputs(); // Get inputs from the walker
                 const outputs = genome.evaluate(inputs); 
 
                 // Set the outputs to the walker

@@ -1,12 +1,12 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
-import { createLimb, makeConnector, applyTorque } from "./ConstraintHelpers";
+import { createLimb, makeConnector, applyTorque, getAngleInfo} from "./ConstraintHelpers";
 import { getGroundHeight } from "../Ground";
 
 const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
-const maxAngularVelocity = 10;
+const maxAngularVelocity = 720;
 const tau = Math.PI * 2;
 const torqueArmDividor = 8;
 const launchVelocity = 10;
@@ -24,7 +24,7 @@ export class WalkerPhysics {
     private legLength: number;
     private joints: Matter.Constraint[];
     private bodyParts: {key: string, part: Matter.Body}[] = [];
-    private previousAngles: Map<string, number> = new Map<string, number>();
+    private jointsInfo: Array<Array<Matter.Body>> = [];
     
     constructor(x: number, y: number, r: number, legLength: number, legWidth: number) {
         this.startingX = x;
@@ -60,20 +60,23 @@ export class WalkerPhysics {
         const leftKnee = makeConnector(this.upperLeftLeg, this.lowerLeftLeg, 0, legLength / 2, 0, -legLength / 2);
 
         this.joints = [rightHip, rightKnee, leftHip, leftKnee];
-
-        // Add body parts to the array
-        this.bodyParts = [
-            { key: 'body', part: this.body },
-            { key: 'upperRightLeg', part: this.upperRightLeg },
-            { key: 'upperLeftLeg', part: this.upperLeftLeg },
-            { key: 'lowerRightLeg', part: this.lowerRightLeg },
-            { key: 'lowerLeftLeg', part: this.lowerLeftLeg }
-        ];
         
-        // Store the previous angles for each limb
-        for (var i = 0; i < this.bodyParts.length; i++) {
-            this.previousAngles.set(this.bodyParts[i].key, this.bodyParts[i].part.angle/tau);
-        }
+        this.bodyParts = [
+            {key: "upperRightLeg", part: this.upperRightLeg},
+            {key: "upperLeftLeg", part: this.upperLeftLeg},
+            {key: "lowerRightLeg", part: this.lowerRightLeg},
+            {key: "lowerLeftLeg", part: this.lowerLeftLeg},
+            {key: "body", part: this.body},
+        ];
+
+        //store the joints relatively        
+        this.jointsInfo = [
+            [this.body],
+            [this.upperRightLeg],
+            [this.lowerRightLeg, this.upperRightLeg],
+            [this.upperLeftLeg],
+            [this.lowerLeftLeg, this.upperLeftLeg],
+        ];
 
         // Add parts to the world
         World.add(getEngine().world, [
@@ -89,26 +92,27 @@ export class WalkerPhysics {
         ]);
     }
   
-    public getInputs(dt: number) {
+    public getInputs() {
         //calculate the angular velocity of the limbs
-        var newAngles = new Map<string, number>();
-        const angularVelocities = new Map<string, number>();
+        var newAngles = []; 
+        const angularVelocities = [];
 
-        for (var i = 0; i < this.bodyParts.length; i++) {
-            const prevAngle = this.previousAngles.get(this.bodyParts[i].key)!;
-            const newAngle = this.bodyParts[i].part.angle/tau; // Normalize the angle to [0, 1]
-            var angularVelocity = (newAngle - prevAngle) / dt;
+        for (let i = 0; i < this.jointsInfo.length; i++) {
+            const v = this.jointsInfo[i];
+            const part = v[0];
+            const relativeTo = v.length == 2 ? v[1] : undefined;
             
-            // Normalize the angular velocity to [0,1]
-            angularVelocity = (angularVelocity + maxAngularVelocity)/(2 * maxAngularVelocity); 
-            angularVelocity = Math.min(Math.max(angularVelocity, 0), 1); // Clamp to [0, 1]
-
-            angularVelocities.set(this.bodyParts[i].key, angularVelocity);
-            newAngles.set(this.bodyParts[i].key, newAngle);
-            
-            this.previousAngles.set(this.bodyParts[i].key, newAngle);
-        }
+            const angleInfo = getAngleInfo(part, relativeTo);
         
+            newAngles.push(angleInfo.angle/tau); // Normalize the angle to [0, 1]
+
+            //normalize and clamp the angular velocity to [0,1]
+            var angularVelocity = angleInfo.angularVelocity / maxAngularVelocity;
+            angularVelocity = Math.min(Math.max(angularVelocity + maxAngularVelocity/2, 0), 1);
+            
+            angularVelocities.push(angularVelocity); // Normalize the angular velocity to [0,1]
+        }
+
         // Calculate the distance to the ground for the feet
         const groundHeight = getGroundHeight();
         const leftFootY = this.lowerLeftLeg.position.y + Math.sin(this.lowerLeftLeg.angle) * this.legLength / 2;
