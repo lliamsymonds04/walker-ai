@@ -15,6 +15,7 @@ export function makeConnector(bodyA: Body, bodyB: Body, ax: number, ay: number, 
 }
 
 export function createLimb(x: number, y: number, width: number, height: number, collisionCat: number): Body {
+    const densityMult = 1.6;
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
             group: -1,
@@ -22,6 +23,7 @@ export function createLimb(x: number, y: number, width: number, height: number, 
             mask: 0xFFFF // Collides with everything by default
         },
         frictionAir: 0.05,
+        density: 0.001 * densityMult,
     });
 }
 
@@ -62,7 +64,7 @@ export function applyTorque(body: Body, torqueScalar: number, armLength = 30) {
 export function getAngleInfo(body: Body, relativeTo?: Body): {angle: number, angularVelocity: number} {
   const angle = relativeTo ? body.angle - relativeTo.angle : body.angle;
   const angularVelocity = relativeTo ? body.angularVelocity - relativeTo.angularVelocity : body.angularVelocity;
-
+  
   return {
     angle,
     angularVelocity,

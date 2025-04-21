@@ -77,6 +77,7 @@ export class WalkerPhysics {
             [this.upperLeftLeg],
             [this.lowerLeftLeg, this.upperLeftLeg],
         ];
+        
 
         // Add parts to the world
         World.add(getEngine().world, [
@@ -108,7 +109,7 @@ export class WalkerPhysics {
 
             //normalize and clamp the angular velocity to [0,1]
             var angularVelocity = angleInfo.angularVelocity / maxAngularVelocity;
-            angularVelocity = Math.min(Math.max(angularVelocity + maxAngularVelocity/2, 0), 1);
+            angularVelocity = Math.min(Math.max(angularVelocity + 0.5, 0), 1);
             
             angularVelocities.push(angularVelocity); // Normalize the angular velocity to [0,1]
         }
