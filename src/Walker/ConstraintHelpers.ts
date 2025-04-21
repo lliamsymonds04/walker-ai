@@ -59,3 +59,12 @@ export function applyTorque(body: Body, torqueScalar: number, armLength = 30) {
     Body.applyForce(body, offsetB, oppositeForce);
 }
   
+export function getAngleInfo(body: Body, relativeTo?: Body): {angle: number, angularVelocity: number} {
+  const angle = relativeTo ? body.angle - relativeTo.angle : body.angle;
+  const angularVelocity = relativeTo ? body.angularVelocity - relativeTo.angularVelocity : body.angularVelocity;
+
+  return {
+    angle,
+    angularVelocity,
+  };
+}
