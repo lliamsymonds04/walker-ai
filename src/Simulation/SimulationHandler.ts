@@ -16,7 +16,7 @@ export class SimulationHandler {
         //create the initial simulator
         const simulatorConfig = {
             populationSize: populationSize,
-            survivalThreshold: 0.2,
+            survivalThreshold: 0.5,
             walkerTransparency: 0.5,
         };
         this.simulator = new Simulator(simulatorConfig);

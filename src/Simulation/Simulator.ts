@@ -53,7 +53,7 @@ export class Simulator {
         const startingY = groundHeight - WalkerRadius - WalkerLegLength * 3;
         const startingX = StartingX + WalkerRadius;
         for (let i = 0; i < this.population.genomes.length; i++) {
-            const walker = new Walker(i, startingX, startingY, WalkerRadius, WalkerLegLength);
+            const walker = new Walker(i + 1, startingX, startingY, WalkerRadius, WalkerLegLength);
             walker.setTransparency(this.config.walkerTransparency);
             this.walkers.push(walker); 
         }

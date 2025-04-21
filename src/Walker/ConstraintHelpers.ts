@@ -14,16 +14,15 @@ export function makeConnector(bodyA: Body, bodyB: Body, ax: number, ay: number, 
     });
 }
 
-export function createLimb(x: number, y: number, width: number, height: number, collisionCat: number): Body {
+export function createLimb(x: number, y: number, width: number, height: number, id: number): Body {
     const densityMult = 1.6;
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
-            group: -1,
-            category: collisionCat, // Define a collision category for the limb 
-            mask: 0xFFFF // Collides with everything by default
+            group: -id,
         },
-        frictionAir: 0.05,
+        frictionAir: 0.2,
         density: 0.001 * densityMult,
+        friction: 0.5,
     });
 }
 

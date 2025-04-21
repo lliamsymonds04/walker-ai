@@ -6,7 +6,7 @@ import { getGroundHeight } from "../Ground";
 const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
-const maxAngularVelocity = 720;
+const maxAngularVelocity = 10;
 const tau = Math.PI * 2;
 const torqueArmDividor = 8;
 const launchVelocity = 10;
@@ -26,7 +26,7 @@ export class WalkerPhysics {
     private bodyParts: {key: string, part: Matter.Body}[] = [];
     private jointsInfo: Array<Array<Matter.Body>> = [];
     
-    constructor(x: number, y: number, r: number, legLength: number, legWidth: number) {
+    constructor(id: number, x: number, y: number, r: number, legLength: number, legWidth: number) {
         this.startingX = x;
         this.radius = r;
         this.legLength = legLength;
@@ -34,9 +34,9 @@ export class WalkerPhysics {
         // Create the body
         this.body = Bodies.circle(x, y, r, {
             collisionFilter: {
-                group: -1,
-                category: collisionCategory,
-                mask: 0xFFFF // Collides with everything by default
+                group: -id,
+                // category: collisionCategory,
+                // mask: 0xFFFF // Collides with everything by default
             },
         });
 
@@ -48,10 +48,10 @@ export class WalkerPhysics {
         };
         
         // Create the limbs
-        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, collisionCategory);
-        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, collisionCategory);
-        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, collisionCategory);
-        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, collisionCategory);
+        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, id);
+        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, id);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, id);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, id);
 
         // Create the joints
         const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
@@ -142,6 +142,7 @@ export class WalkerPhysics {
         applyTorque(this.upperLeftLeg, lu, Math.floor(this.legLength/torqueArmDividor));
         applyTorque(this.lowerRightLeg, rl, Math.floor(this.legLength/torqueArmDividor));
         applyTorque(this.lowerLeftLeg, ll, Math.floor(this.legLength/torqueArmDividor));
+        
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {

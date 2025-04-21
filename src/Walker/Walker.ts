@@ -2,7 +2,7 @@ import { WalkerPhysics } from "./WalkerPhysics";
 import { WalkerVisuals } from "./WalkerVisuals";
 
 const legThickness = 0.4;
-const outputScaler = 0.1;
+const outputScaler = 0.07;
 
 export class Walker {
     private id: number;
@@ -14,7 +14,7 @@ export class Walker {
         this.id = id;
         
         const legWidth = Math.floor(r * legThickness);
-        this.physics = new WalkerPhysics(x, y, r, legLength, legWidth);
+        this.physics = new WalkerPhysics(id, x, y, r, legLength, legWidth);
         this.visuals = new WalkerVisuals(r, legLength, legWidth);
         
         this.update();
