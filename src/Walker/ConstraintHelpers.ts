@@ -18,7 +18,9 @@ export function createLimb(x: number, y: number, width: number, height: number, 
     const densityMult = 1.6;
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
-            group: -id,
+            // group: -id,
+            category: 1 << id,
+            mask: (1 << id) | 0x0001,
         },
         frictionAir: 0.2,
         density: 0.001 * densityMult,

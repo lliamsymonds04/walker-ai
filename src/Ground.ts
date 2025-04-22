@@ -18,12 +18,6 @@ export async function createGround(height: number) {
     );
 
     World.add(engine.world, ground);
-   
-    // Set the ground's collision filter to collide with everything
-    ground.collisionFilter = {
-        category: 10, // Define a collision category for the ground
-        mask: 0xFFFF // Collides with everything by default
-    };
     
     const texture = await Assets.load("/assets/sand.png");
 
