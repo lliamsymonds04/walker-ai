@@ -2,7 +2,7 @@ import { Simulator } from "./Simulator";
 import { Engine } from "matter-js";
 import { updateGenerationCounter, setupSpeedSlider } from "../Overlay";
 
-const SimulationLifespan = 10 //seconds
+const SimulationLifespan = 30 //seconds
 
 export class SimulationHandler {
     private stepsPerUpdate: number = 3; // Number of steps to take per update

@@ -14,14 +14,14 @@ export function makeConnector(bodyA: Body, bodyB: Body, ax: number, ay: number, 
     });
 }
 
-export function createLimb(x: number, y: number, width: number, height: number, id: number): Body {
+export function createLimb(x: number, y: number, width: number, height: number, bodyCategory: number, limbCategory: number): Body {
     const densityMult = 1.6;
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
-            // group: -id,
-            category: 1 << id,
-            mask: (1 << id) | 0x0001,
+            category: limbCategory,
+            mask: 0x0001 | bodyCategory,
         },
+        
         frictionAir: 0.2,
         density: 0.001 * densityMult,
         friction: 0.5,

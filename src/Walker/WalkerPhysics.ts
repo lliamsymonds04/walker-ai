@@ -1,17 +1,18 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
-import { createLimb, makeConnector, applyTorque, getAngleInfo} from "./ConstraintHelpers";
+import { createLimb, makeConnector, getAngleInfo} from "./ConstraintHelpers";
 import { getGroundHeight } from "../Ground";
 
 const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
-const maxAngularVelocity = 10;
+const maxAngularVelocity = 0.5;
 const tau = Math.PI * 2;
-const torqueArmDividor = 8;
 const launchVelocity = 100;
 
 const defaultCategory = 0x0001; // Define a collision category for the walker
+
+const maxLimbSpeed = 10;
 
 export class WalkerPhysics {
     private body: Matter.Body;
@@ -32,14 +33,21 @@ export class WalkerPhysics {
         this.legLength = legLength;
 
         // Create the body
+        const bodyCategory = 2 << id; // Define a collision category for the body
+        const limbCategory = 16 << id;
         this.body = Bodies.circle(x, y, r, {
             collisionFilter: {
-                category: 1 << id,
-                mask: (1 << id) | defaultCategory,
+                category: bodyCategory,
+                mask: bodyCategory | defaultCategory | limbCategory,
             },
+            // isStatic: true,
+            /* collisionFilter: {
+                category: bodyCategory,
+                mask: bodyCategory | defaultCategory,
+            }, */
         });
 
-        const hipRadiusOffset = 2;
+        const hipRadiusOffset = 10;
         const angle = (90 - legAttachAngle) * Math.PI / 180;
         const hipOffset = {
             x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
@@ -47,10 +55,10 @@ export class WalkerPhysics {
         };
         
         // Create the limbs
-        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, id);
-        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, id);
-        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, id);
-        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, id);
+        this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
+        this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, bodyCategory, limbCategory);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, bodyCategory, limbCategory);
 
         // Create the joints
         const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
@@ -137,11 +145,10 @@ export class WalkerPhysics {
     }
     
     public setMotors(ru: number, lu: number, rl: number, ll: number): void {
-        applyTorque(this.upperRightLeg, ru, Math.floor(this.legLength/torqueArmDividor));
-        applyTorque(this.upperLeftLeg, lu, Math.floor(this.legLength/torqueArmDividor));
-        applyTorque(this.lowerRightLeg, rl, Math.floor(this.legLength/torqueArmDividor));
-        applyTorque(this.lowerLeftLeg, ll, Math.floor(this.legLength/torqueArmDividor));
-        
+        Matter.Body.setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity);
+        Matter.Body.setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity);
+        Matter.Body.setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity);
+        Matter.Body.setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity);
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {
@@ -153,7 +160,7 @@ export class WalkerPhysics {
         const bodyY = this.body.position.y;
         const distance = (groundHeight - bodyY);
 
-        return distance < this.radius * 1.5;
+        return distance < this.radius + this.legLength * 1/2;
     }
     
     private isBodyLaunched(): boolean {
