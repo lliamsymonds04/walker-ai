@@ -6,7 +6,7 @@ import { getGroundHeight } from "../Ground";
 const { Bodies, World } = Matter;
 
 const legAttachAngle = 35;
-const maxAngularVelocity = 0.5;
+const maxAngularVelocity = 0.6;
 const tau = Math.PI * 2;
 const launchVelocity = 100;
 
@@ -47,7 +47,8 @@ export class WalkerPhysics {
             }, */
         });
 
-        const hipRadiusOffset = 10;
+        const hipRadiusOffset = 15;
+        const legOffset = 5;
         const angle = (90 - legAttachAngle) * Math.PI / 180;
         const hipOffset = {
             x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
@@ -57,14 +58,14 @@ export class WalkerPhysics {
         // Create the limbs
         this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
         this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
-        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, bodyCategory, limbCategory);
-        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth, legLength, bodyCategory, limbCategory);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength + legOffset, legWidth, legLength, bodyCategory, limbCategory);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth + legOffset, legLength, bodyCategory, limbCategory);
 
         // Create the joints
         const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
         const leftHip = makeConnector(this.body, this.upperLeftLeg, -hipOffset.x, hipOffset.y, 0, -legLength / 2);
-        const rightKnee = makeConnector(this.upperRightLeg, this.lowerRightLeg, 0, legLength / 2, 0, -legLength / 2);
-        const leftKnee = makeConnector(this.upperLeftLeg, this.lowerLeftLeg, 0, legLength / 2, 0, -legLength / 2);
+        const rightKnee = makeConnector(this.upperRightLeg, this.lowerRightLeg, 0, legLength / 2, 0, -legLength / 2 - legOffset);
+        const leftKnee = makeConnector(this.upperLeftLeg, this.lowerLeftLeg, 0, legLength / 2, 0, -legLength / 2 - legOffset);
 
         this.joints = [rightHip, rightKnee, leftHip, leftKnee];
         
@@ -112,7 +113,9 @@ export class WalkerPhysics {
             
             const angleInfo = getAngleInfo(part, relativeTo);
         
-            newAngles.push(angleInfo.angle/tau); // Normalize the angle to [0, 1]
+            // newAngles.push(angleInfo.angle/tau); // Normalize the angle to [0, 1]
+            const normalizedAngle = ((angleInfo.angle % tau) + tau) % tau; // Normalize to [0, tau)
+            newAngles.push(normalizedAngle / tau); // Normalize the angle to [0, 1]
 
             //normalize and clamp the angular velocity to [0,1]
             var angularVelocity = angleInfo.angularVelocity / maxAngularVelocity;
@@ -160,7 +163,7 @@ export class WalkerPhysics {
         const bodyY = this.body.position.y;
         const distance = (groundHeight - bodyY);
 
-        return distance < this.radius + this.legLength * 1/2;
+        return distance < this.radius + this.legLength * 0.2;
     }
     
     private isBodyLaunched(): boolean {

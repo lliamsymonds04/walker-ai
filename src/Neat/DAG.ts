@@ -1,4 +1,4 @@
-import { getRandomActivationFunction } from "./ActivationFunctions";
+import { tanh } from "./ActivationFunctions";
 
 type NodeType = "input" | "hidden" | "output";
 
@@ -147,7 +147,7 @@ export class DAG {
             id: this.getNextNodeId(),
             type: type,
             bias: Math.random() * 2 - 1, // Random bias between -1 and 1
-            activationFunction: getRandomActivationFunction(),
+            activationFunction: tanh,
         }
     }
 }

@@ -50,7 +50,7 @@ export class Simulator {
         
         //create the walkers
         const groundHeight = getGroundHeight();
-        const startingY = groundHeight - WalkerRadius - WalkerLegLength * 3;
+        const startingY = groundHeight - WalkerRadius - WalkerLegLength * 2;
         const startingX = StartingX + WalkerRadius;
         for (let i = 0; i < this.population.genomes.length; i++) {
             const walker = new Walker(i, startingX, startingY, WalkerRadius, WalkerLegLength);
