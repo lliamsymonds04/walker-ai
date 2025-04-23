@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import { getEngine } from "../AppInitializer";
-import { createLimb, makeConnector, getAngleInfo} from "./ConstraintHelpers";
+import { createLimb, makeConnector, getAngleInfo, setAngularVelocity} from "./ConstraintHelpers";
 import { getGroundHeight } from "../Ground";
 
 const { Bodies, World } = Matter;
@@ -11,8 +11,6 @@ const tau = Math.PI * 2;
 const launchVelocity = 100;
 
 const defaultCategory = 0x0001; // Define a collision category for the walker
-
-const maxLimbSpeed = 10;
 
 export class WalkerPhysics {
     private body: Matter.Body;
@@ -47,7 +45,7 @@ export class WalkerPhysics {
             }, */
         });
 
-        const hipRadiusOffset = 15;
+        const hipRadiusOffset = 10;
         const legOffset = 5;
         const angle = (90 - legAttachAngle) * Math.PI / 180;
         const hipOffset = {
@@ -148,10 +146,15 @@ export class WalkerPhysics {
     }
     
     public setMotors(ru: number, lu: number, rl: number, ll: number): void {
-        Matter.Body.setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity);
+        /* Matter.Body.setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity);
         Matter.Body.setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity);
         Matter.Body.setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity);
-        Matter.Body.setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity);
+        Matter.Body.setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity); */
+        // console.log("ru: ", this.upperRightLeg.angle - this.body.angle, "lu: ", this.upperLeftLeg.angle - this.body.angle, "rl: ", this.lowerRightLeg.angle - this.upperRightLeg.angle, "ll: ", this.lowerLeftLeg.angle - this.upperLeftLeg.angle);
+        setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity, this.body, Math.PI/3);
+        setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity, this.body, Math.PI/3);
+        setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity, this.upperRightLeg, Math.PI/4);
+        setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity, this.upperLeftLeg, Math.PI/4);
     }
     
     public getBodyParts(): {key: string, part: Matter.Body}[] {
@@ -163,7 +166,7 @@ export class WalkerPhysics {
         const bodyY = this.body.position.y;
         const distance = (groundHeight - bodyY);
 
-        return distance < this.radius + this.legLength * 0.2;
+        return distance < this.radius + this.legLength * 0.5;
     }
     
     private isBodyLaunched(): boolean {

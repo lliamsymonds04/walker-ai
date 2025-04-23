@@ -63,11 +63,30 @@ export function applyTorque(body: Body, torqueScalar: number, armLength = 30) {
 }
   
 export function getAngleInfo(body: Body, relativeTo?: Body): {angle: number, angularVelocity: number} {
-  const angle = relativeTo ? body.angle - relativeTo.angle : body.angle;
-  const angularVelocity = relativeTo ? body.angularVelocity - relativeTo.angularVelocity : body.angularVelocity;
+    const angle = relativeTo ? body.angle - relativeTo.angle : body.angle;
+    const angularVelocity = relativeTo ? body.angularVelocity - relativeTo.angularVelocity : body.angularVelocity;
   
-  return {
-    angle,
-    angularVelocity,
-  };
+    return {
+        angle,
+        angularVelocity,
+    };
+}
+
+
+const limitDamping = 0.1;
+export function setAngularVelocity(limb: Body, velocity: number, parent: Body, angleLimit: number) {
+    const parentAngle = parent.angle;
+    var maxAng = parentAngle + angleLimit;
+    var minAng = parentAngle - angleLimit;
+    
+    const limbAngle = limb.angle;
+
+    var outputVelocity = velocity;
+    if (limbAngle > maxAng && velocity > 0) {
+        outputVelocity = -velocity * limitDamping; 
+    } else if (limbAngle < minAng && velocity < 0) {
+        outputVelocity = -velocity * limitDamping;
+    }
+    
+    Body.setAngularVelocity(limb, outputVelocity);
 }
