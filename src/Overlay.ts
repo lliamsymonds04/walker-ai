@@ -1,5 +1,5 @@
-export function updateGenerationCounter(generation: number): void {
-    document.getElementById("generation")!.innerText = `Generation: ${generation}`;
+export function updateGenerationCounter(generation: number, batch: number): void {
+    document.getElementById("generation")!.innerText = `Generation: ${generation}, Batch: ${batch}`;
 }
 
 

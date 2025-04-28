@@ -45,8 +45,8 @@ export class WalkerPhysics {
             }, */
         });
 
-        const hipRadiusOffset = 10;
-        const legOffset = 5;
+        const hipRadiusOffset = 20;
+        const legOffset = 0;
         const angle = (90 - legAttachAngle) * Math.PI / 180;
         const hipOffset = {
             x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
@@ -56,8 +56,8 @@ export class WalkerPhysics {
         // Create the limbs
         this.upperRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
         this.upperLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y, legWidth, legLength, bodyCategory, limbCategory);
-        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength + legOffset, legWidth, legLength, bodyCategory, limbCategory);
-        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength, legWidth + legOffset, legLength, bodyCategory, limbCategory);
+        this.lowerRightLeg = createLimb(x + hipOffset.x, y + hipOffset.y + legLength + legOffset, legWidth + legOffset, legLength, bodyCategory, limbCategory);
+        this.lowerLeftLeg = createLimb(x - hipOffset.x, y + hipOffset.y + legLength + legOffset, legWidth + legOffset, legLength, bodyCategory, limbCategory);
 
         // Create the joints
         const rightHip = makeConnector(this.body, this.upperRightLeg, hipOffset.x, hipOffset.y, 0, -legLength / 2);
@@ -156,9 +156,7 @@ export class WalkerPhysics {
         // setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity, this.body, Math.PI/3);
         
         //constrain the lower legs
-        console.log("right leg")
         setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity, this.upperRightLeg, Math.PI/4);
-        console.log("left leg")
         setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity, this.upperLeftLeg, Math.PI/4);
     }
     

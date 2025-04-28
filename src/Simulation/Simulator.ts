@@ -1,9 +1,12 @@
 import { Population } from "../Neat/Population";
 import { Walker, getNumInputs, getNumOutputs } from "../Walker/Walker";
 import { getGroundHeight } from "../Ground";
+import { Genome } from "../Neat/Genome";
+import { updateGenerationCounter } from "../Overlay";
 
 interface simulatorConfig {
     populationSize: number;
+    batchSize: number;
     survivalThreshold: number;
     walkerTransparency: number;
 }
@@ -18,12 +21,14 @@ export class Simulator {
     private walkers: Walker[] = [];
     private config: simulatorConfig;
     private aliveTime: number = 0;
+    private batch: number = 0; // Current batch number
+    private generation: number; // Current generation number
 
-    constructor(config: simulatorConfig, population?: Population) {
+    constructor(config: simulatorConfig, generation: number, population?: Population) {
         this.config = config;
+        this.generation = generation;
         
         if (population) {
-
             this.population = population; // If a population is provided, use it
         } else {
             //create the configs
@@ -47,16 +52,8 @@ export class Simulator {
             
             this.population = new Population(populationConfig, mutationConfig);
         }
-        
-        //create the walkers
-        const groundHeight = getGroundHeight();
-        const startingY = groundHeight - WalkerRadius - WalkerLegLength * 2;
-        const startingX = StartingX + WalkerRadius;
-        for (let i = 0; i < this.population.genomes.length; i++) {
-            const walker = new Walker(i, startingX, startingY, WalkerRadius, WalkerLegLength);
-            walker.setTransparency(this.config.walkerTransparency);
-            this.walkers.push(walker); 
-        }
+         
+       this.createNewBatch(); // Create the initial batch of walkers
     }
 
     //returns the number of walkers alive
@@ -64,19 +61,17 @@ export class Simulator {
         var walkersAlive = 0;
 
         this.aliveTime += dt; // Increment alive time
-        this.population.genomes.forEach((genome, i) => {
-            const walker = this.walkers[i];
+        this.walkers.forEach((walker, i) => {
             if (walker.isAlive()) {
                 walkersAlive++; // Count alive walkers
                 
                 const inputs = walker.getInputs(); // Get inputs from the walker
-                const outputs = genome.evaluate(inputs); 
+                const outputs = this.getWalkerGenome(i).evaluate(inputs); 
 
                 // Set the outputs to the walker
                 walker.setOutputs(outputs); 
             }
         });
-        
         return walkersAlive
     }
     
@@ -85,24 +80,66 @@ export class Simulator {
     }
 
     makeNewGeneration(): Simulator {
-        //set the fitness of each genome
-        this.population.genomes.forEach((genome, i) => {
-            genome.fitness = getWalkerFitness(this.walkers[i]);
-        })
-        
         //cleanup all the walkers
-        this.walkers.forEach(w => w.destroy());
-        this.walkers = [];
+        this.cleanupWalkers(); // Destroy all walkers
         
         const newPop = this.population.reproduce(); // Reproduce the population
 
-        return new Simulator(this.config, newPop); 
+        return new Simulator(this.config, this.generation + 1, newPop); 
+    }
+    
+    private cleanupWalkers(): void {
+        this.walkers.forEach((walker, i) => {
+            this.getWalkerGenome(i).fitness = getWalkerFitness(walker); // Set the fitness of the genome
+            walker.destroy(); // Destroy the walker
+        });
+        this.walkers = []; // Clear the walkers array
+    }
+    
+    private createWalkers(n: number): void {
+        const groundHeight = getGroundHeight();
+        const startingY = groundHeight - WalkerRadius - WalkerLegLength * 2;
+        const startingX = StartingX + WalkerRadius;
+        for (let i = 0; i < n; i++) {
+            const walker = new Walker(i, startingX, startingY, WalkerRadius, WalkerLegLength);
+            walker.setTransparency(this.config.walkerTransparency);
+            this.walkers.push(walker); 
+        }
+    }
+    
+    createNewBatch(): void {
+        if (this.batch > 0) {
+            //cleanup the previous batch of walkers
+            this.cleanupWalkers(); // Destroy the previous batch of walkers
+            this.aliveTime = 0; // Reset alive time for the new batch
+        }
+
+        const remainingWalkers = this.config.populationSize - this.batch * this.config.batchSize;
+        const newBatchSize = Math.min(this.config.batchSize, remainingWalkers);
+        
+
+        this.batch += 1;
+        this.createWalkers(newBatchSize); // Create new walkers for the batch
+        
+        updateGenerationCounter(this.generation, this.batch); // Update the generation and batch counter in the UI
+    }
+    
+    private getWalkerGenome(walker_index: number): Genome {
+       const i = walker_index + (this.batch - 1) * this.config.batchSize; 
+
+       return this.population.genomes[i]; // Get the genome for the walker
+    }
+    
+    isFinalBatch(): boolean {
+        return this.batch * this.config.batchSize >= this.config.populationSize; // Check if it's the final batch
     }
     
     getAliveTime(): number {
         return this.aliveTime;
     }
 }
+
+
 
 function getWalkerFitness(w: Walker): number {
     //helper function incase i want to extend the fitness function later
