@@ -2,6 +2,7 @@ import { Genome } from "./Genome";
 import { crossoverGenomes } from "./Crossover";
 import { mutateAddConnection, mutateAddHiddenNode, removeHiddenNode, mutateBias,
     mutateWeight, MutationConfig, resetWeight, toggleConnection, removeConnection} from "./Mutations";
+import { tanh } from "./ActivationFunctions";
 
 export interface PopulationConfig {
     size: number;
@@ -93,7 +94,7 @@ function createGenome(numInputs: number, numOutputs: number): Genome {
             id: outputId,
             type: "output",
             bias: Math.random() * 2 - 1, // Random bias between -1 and 1
-            activationFunction: (x) => x, // Identity function for output nodes
+            activationFunction: tanh, 
         });
             
         for (let j = 0; j < numInputs; j++) {

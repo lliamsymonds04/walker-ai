@@ -146,14 +146,19 @@ export class WalkerPhysics {
     }
     
     public setMotors(ru: number, lu: number, rl: number, ll: number): void {
-        /* Matter.Body.setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity);
+        //dont constriant the upper legs
+        Matter.Body.setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity);
         Matter.Body.setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity);
-        Matter.Body.setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity);
-        Matter.Body.setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity); */
+        // Matter.Body.setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity);
+        // Matter.Body.setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity); 
         // console.log("ru: ", this.upperRightLeg.angle - this.body.angle, "lu: ", this.upperLeftLeg.angle - this.body.angle, "rl: ", this.lowerRightLeg.angle - this.upperRightLeg.angle, "ll: ", this.lowerLeftLeg.angle - this.upperLeftLeg.angle);
-        setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity, this.body, Math.PI/3);
-        setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity, this.body, Math.PI/3);
+        // setAngularVelocity(this.upperRightLeg, ru * maxAngularVelocity, this.body, Math.PI/3);
+        // setAngularVelocity(this.upperLeftLeg, lu * maxAngularVelocity, this.body, Math.PI/3);
+        
+        //constrain the lower legs
+        console.log("right leg")
         setAngularVelocity(this.lowerRightLeg, rl * maxAngularVelocity, this.upperRightLeg, Math.PI/4);
+        console.log("left leg")
         setAngularVelocity(this.lowerLeftLeg, ll * maxAngularVelocity, this.upperLeftLeg, Math.PI/4);
     }
     
