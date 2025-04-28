@@ -25,32 +25,42 @@ export class WalkerPhysics {
     private bodyParts: {key: string, part: Matter.Body}[] = [];
     private jointsInfo: Array<Array<Matter.Body>> = [];
     
-    constructor(id: number, x: number, y: number, r: number, legLength: number, legWidth: number) {
+    constructor(id: number, x: number, y: number, radius: number, legLength: number, legWidth: number) {
         this.startingX = x;
-        this.radius = r;
+        this.radius = radius;
         this.legLength = legLength;
+        
+        const size = radius * 2; // Define the size of the body
 
         // Create the body
         const bodyCategory = 2 << id; // Define a collision category for the body
         const limbCategory = 16 << id;
-        this.body = Bodies.circle(x, y, r, {
+        /* this.body = Bodies.circle(x, y, r, {
             collisionFilter: {
                 category: bodyCategory,
                 mask: bodyCategory | defaultCategory | limbCategory,
             },
-            // isStatic: true,
-            /* collisionFilter: {
+            
+        }); */
+        this.body = Bodies.rectangle(x, y, size, size, {
+            collisionFilter: {
                 category: bodyCategory,
-                mask: bodyCategory | defaultCategory,
-            }, */
+                mask: bodyCategory | defaultCategory | limbCategory,
+            },
+            frictionAir: 0.2,
         });
 
-        const hipRadiusOffset = 20;
+        const hipOffsetY = 4;
         const legOffset = 0;
-        const angle = (90 - legAttachAngle) * Math.PI / 180;
+        /* const bodyMiddle = {
+            x: x + size/2,
+            y: y + size/2,
+        } */
+        x = x + radius;
+        y = y + radius;
         const hipOffset = {
-            x: Math.ceil(Math.cos(angle) * (r + hipRadiusOffset)),
-            y: Math.ceil(Math.sin(angle) * (r + hipRadiusOffset)),
+            x: size/4,
+            y: size/2 + hipOffsetY,
         };
         
         // Create the limbs

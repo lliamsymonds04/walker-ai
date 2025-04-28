@@ -4,7 +4,7 @@ import { getApp } from "../AppInitializer";
 
 const LimbNames = ["upperRightLeg", "upperLeftLeg", "lowerRightLeg", "lowerLeftLeg"];
 
-const bodyTexture = await Assets.load("/assets/FishBody.png"); 
+const bodyTexture = await Assets.load("/assets/FishBody2.png"); 
 const limbTexture = await Assets.load("/assets/FishLimb.png");
 
 export class WalkerVisuals {
