@@ -5,7 +5,6 @@ import { getGroundHeight } from "../Ground";
 
 const { Bodies, World } = Matter;
 
-const legAttachAngle = 35;
 const maxAngularVelocity = 0.6;
 const tau = Math.PI * 2;
 const launchVelocity = 100;
@@ -52,10 +51,7 @@ export class WalkerPhysics {
 
         const hipOffsetY = 4;
         const legOffset = 0;
-        /* const bodyMiddle = {
-            x: x + size/2,
-            y: y + size/2,
-        } */
+
         x = x + radius;
         y = y + radius;
         const hipOffset = {

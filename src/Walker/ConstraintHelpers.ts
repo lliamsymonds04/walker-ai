@@ -15,7 +15,7 @@ export function makeConnector(bodyA: Body, bodyB: Body, ax: number, ay: number, 
 }
 
 export function createLimb(x: number, y: number, width: number, height: number, bodyCategory: number, limbCategory: number): Body {
-    const densityMult = 1.6;
+    const densityMult = 2;
     return Bodies.rectangle(x, y, width, height, {
         collisionFilter: {
             category: limbCategory,
