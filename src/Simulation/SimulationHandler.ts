@@ -26,8 +26,8 @@ export class SimulationHandler {
     }
     
     public update(dt: number): void {
-        var isSimulationFinished = false;
-        var createNewBatch = false;
+        let isSimulationFinished = false;
+        let createNewBatch = false;
         for (let i = 0; i < this.stepsPerUpdate; i++) {
             Engine.update(this.engine,dt);
             

@@ -58,7 +58,7 @@ export class Simulator {
 
     //returns the number of walkers alive
     update(dt: number): number {
-        var walkersAlive = 0;
+        let walkersAlive = 0;
 
         this.aliveTime += dt; // Increment alive time
         this.walkers.forEach((walker, i) => {

@@ -34,13 +34,7 @@ export class WalkerPhysics {
         // Create the body
         const bodyCategory = 2 << id; // Define a collision category for the body
         const limbCategory = 16 << id;
-        /* this.body = Bodies.circle(x, y, r, {
-            collisionFilter: {
-                category: bodyCategory,
-                mask: bodyCategory | defaultCategory | limbCategory,
-            },
-            
-        }); */
+        
         this.body = Bodies.rectangle(x, y, size, size, {
             collisionFilter: {
                 category: bodyCategory,
@@ -107,7 +101,7 @@ export class WalkerPhysics {
   
     public getInputs() {
         //calculate the angular velocity of the limbs
-        var newAngles = []; 
+        let newAngles = []; 
         const angularVelocities = [];
 
         for (let i = 0; i < this.jointsInfo.length; i++) {
@@ -122,7 +116,7 @@ export class WalkerPhysics {
             newAngles.push(normalizedAngle / tau); // Normalize the angle to [0, 1]
 
             //normalize and clamp the angular velocity to [0,1]
-            var angularVelocity = angleInfo.angularVelocity / maxAngularVelocity;
+            let angularVelocity = angleInfo.angularVelocity / maxAngularVelocity;
             angularVelocity = Math.min(Math.max(angularVelocity + 0.5, 0), 1);
             
             angularVelocities.push(angularVelocity); // Normalize the angular velocity to [0,1]
@@ -132,8 +126,8 @@ export class WalkerPhysics {
         const groundHeight = getGroundHeight();
         const leftFootY = this.lowerLeftLeg.position.y + Math.sin(this.lowerLeftLeg.angle) * this.legLength / 2;
         const rightFootY = this.lowerRightLeg.position.y + Math.sin(this.lowerRightLeg.angle) * this.legLength / 2;
-        var leftFootDistance = Math.abs(leftFootY - groundHeight);
-        var rightFootDistance = Math.abs(rightFootY - groundHeight);
+        let leftFootDistance = Math.abs(leftFootY - groundHeight);
+        let rightFootDistance = Math.abs(rightFootY - groundHeight);
 
         const maxGroundDist = this.legLength * 2;
         leftFootDistance = Math.min(leftFootDistance, maxGroundDist)/maxGroundDist;

@@ -49,7 +49,7 @@ export class WalkerVisuals {
     public update(bodyParts: {key:string, part: Matter.Body}[]): void {
         if (this.transparency == 0) return; // If transparency is 0, do not update visuals
 
-        for (var i: number = 0; i < bodyParts.length; i++) {
+        for (let i: number = 0; i < bodyParts.length; i++) {
             const part = bodyParts[i].part;
             const key = bodyParts[i].key;
             const visual = this.visuals.get(key);
