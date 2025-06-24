@@ -73,7 +73,7 @@ export function getAngleInfo(body: Body, relativeTo?: Body): {angle: number, ang
 }
 
 
-const limitDamping = 0.1;
+// const limitDamping = 0.1;
 /* export function setAngularVelocity(limb: Body, velocity: number, parent: Body, angleLimit: number) {
     const parentAngle = parent.angle;
     var maxAng = parentAngle + angleLimit;
@@ -150,5 +150,6 @@ export function setAngularVelocity(limb: Body, velocity: number, parent: Body, m
         newVelocity = 0;
     } 
       
+    newVelocity = velocity;
     Body.setAngularVelocity(limb, velocity);
 }

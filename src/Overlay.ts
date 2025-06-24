@@ -1,7 +1,6 @@
 export function updateGenerationCounter(generation: number, batch: number): void {
-    document.getElementById("generation")!.innerText = `Generation: ${generation}, Batch: ${batch}`;
+    document.getElementById("generation")!.innerText = `Generation: ${generation + 1}, Batch: ${batch}`;
 }
-
 
 export function setupSpeedSlider(intial: number, updateSpeed: (x: number) => void): void {
     const speedSlider = document.getElementById('speed') as HTMLInputElement;
