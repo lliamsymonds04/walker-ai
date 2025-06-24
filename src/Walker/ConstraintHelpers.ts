@@ -142,17 +142,13 @@ export function setAngularVelocity(limb: Body, velocity: number, parent: Body, m
     
     let newVelocity = velocity;
     // Case 1: Near upper limit and trying to increase angle
-    /* if (nearUpperLimit && velocity > 0) {
-        // Gradually slow down as we approach the limit
-        // const limitFactor = 1 - ((relativeAngle - maxAngle * 0.95) / (maxAngle * 0.05));
+    if (nearUpperLimit && velocity > 0) {
         newVelocity = 0;
     } 
     // Case 2: Near lower limit and trying to decrease angle
     else if (nearLowerLimit && velocity < 0) {
-        // Gradually slow down as we approach the limit
-        // const limitFactor = 1 - ((-relativeAngle - maxAngle * 0.95) / (maxAngle * 0.05));
         newVelocity = 0;
-    } */
+    } 
       
-    Body.setAngularVelocity(limb, newVelocity);
+    Body.setAngularVelocity(limb, velocity);
 }

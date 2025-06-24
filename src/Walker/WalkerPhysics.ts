@@ -101,7 +101,7 @@ export class WalkerPhysics {
   
     public getInputs() {
         //calculate the angular velocity of the limbs
-        let newAngles = []; 
+        const newAngles = []; 
         const angularVelocities = [];
 
         for (let i = 0; i < this.jointsInfo.length; i++) {
