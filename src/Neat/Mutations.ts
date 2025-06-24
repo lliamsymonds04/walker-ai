@@ -28,6 +28,7 @@ export function mutateAddConnection(genome: Genome): void {
       });
     } catch (e) {
       // Connection would create cycle — skip
+      console.error("Error in mutateAddConnection:", e);
     }
 }
 
@@ -65,6 +66,7 @@ export function mutateAddHiddenNode(genome: Genome): void {
         });   
     } catch (e) {
         // Connection would create cycle — skip
+        console.error("Error in mutateAddHiddenNode:", e);
     }
 }
 
