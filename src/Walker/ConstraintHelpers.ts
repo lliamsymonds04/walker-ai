@@ -151,5 +151,5 @@ export function setAngularVelocity(limb: Body, velocity: number, parent: Body, m
     } 
       
     newVelocity = velocity;
-    Body.setAngularVelocity(limb, velocity);
+    Body.setAngularVelocity(limb, newVelocity);
 }
