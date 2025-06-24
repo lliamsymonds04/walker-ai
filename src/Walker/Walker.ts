@@ -16,6 +16,7 @@ export class Walker {
         const legWidth = Math.floor(r * legThickness);
         this.physics = new WalkerPhysics(id, x, y, r, legLength, legWidth);
         this.visuals = new WalkerVisuals(r, legLength, legWidth);
+        this.visuals.init()
         
         this.update();
     }

@@ -4,8 +4,10 @@ import { getApp } from "../AppInitializer";
 
 const LimbNames = ["upperRightLeg", "upperLeftLeg", "lowerRightLeg", "lowerLeftLeg"];
 
-const bodyTexture = await Assets.load("/assets/FishBody2.png"); 
-const limbTexture = await Assets.load("/assets/FishLimb.png");
+// const bodyTexture = await Assets.load("/assets/FishBody2.png"); 
+// const limbTexture = await Assets.load("/assets/FishLimb.png");
+const bodyTexturePath = "/assets/FishBody.png";
+const limbTexturePath = "/assets/FishLimb.png";
 
 export class WalkerVisuals {
     private visuals: Map<string, Sprite> = new Map<string, Sprite>(); 
@@ -16,11 +18,10 @@ export class WalkerVisuals {
         const app = getApp();
 
         this.transparency = 1.0; // Default transparency
-        
 
         for (let i = 0; i < LimbNames.length; i++) {
             const limbName = LimbNames[i];
-            const limbVisual = new Sprite({texture: limbTexture});
+            const limbVisual = new Sprite();
             limbVisual.width = legWidth; 
             limbVisual.height = legLength;
             limbVisual.anchor.set(0.5, 0.5);
@@ -29,8 +30,7 @@ export class WalkerVisuals {
         }        
         
         // Convert to texture and make a sprite
-        
-        const ballSprite = new Sprite({texture: bodyTexture});
+        const ballSprite = new Sprite();
         ballSprite.width = radius * 2;
         ballSprite.height = radius * 2;
 
@@ -44,6 +44,24 @@ export class WalkerVisuals {
         //setup the debug
         this.debugGraphics = new Graphics();
         app.stage.addChild(this.debugGraphics);
+    }
+
+    async init(): Promise<void> {
+        const bodyTexture = await Assets.load(bodyTexturePath);
+        const limbTexture = await Assets.load(limbTexturePath);
+
+        const body = this.visuals.get("body")
+        if (!body) {
+            throw new Error("Body visual not found");
+        }
+        body.texture = bodyTexture;
+
+        for (const limbName of LimbNames) {
+            const limbSprite = this.visuals.get(limbName);
+            if (limbSprite) {
+                limbSprite.texture = limbTexture;
+            }
+        }
     }
     
     public update(bodyParts: {key:string, part: Matter.Body}[]): void {
