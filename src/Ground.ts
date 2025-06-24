@@ -2,7 +2,7 @@ import Matter from "matter-js";
 import { TilingSprite, Assets } from "pixi.js";
 import { getApp, getEngine } from "./AppInitializer";
 
-var groundHeight = 0
+let groundHeight = 0
 
 export async function createGround(height: number) {
     const app = getApp();
